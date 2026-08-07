@@ -80,36 +80,36 @@ Deferred to a future release. Tracked but not in the current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| GRID-01 | _TBD_ | Pending |
-| GRID-02 | _TBD_ | Pending |
-| GRID-03 | _TBD_ | Pending |
-| GRID-04 | _TBD_ | Pending |
-| GRID-05 | _TBD_ | Pending |
-| GRID-06 | _TBD_ | Pending |
-| CFG-01 | _TBD_ | Pending |
-| CFG-02 | _TBD_ | Pending |
-| CFG-03 | _TBD_ | Pending |
-| CFG-04 | _TBD_ | Pending |
-| CFG-05 | _TBD_ | Pending |
-| WID-01 | _TBD_ | Pending |
-| WID-02 | _TBD_ | Pending |
-| WID-03 | _TBD_ | Pending |
-| WID-04 | _TBD_ | Pending |
-| BYOW-01 | _TBD_ | Pending |
-| BYOW-02 | _TBD_ | Pending |
-| BYOW-03 | _TBD_ | Pending |
-| BYOW-04 | _TBD_ | Pending |
-| BYOW-05 | _TBD_ | Pending |
-| KIOSK-01 | _TBD_ | Pending |
-| KIOSK-02 | _TBD_ | Pending |
-| KIOSK-03 | _TBD_ | Pending |
-| KIOSK-04 | _TBD_ | Pending |
+| GRID-01 | Phase 2 | Pending |
+| GRID-02 | Phase 2 | Pending |
+| GRID-03 | Phase 2 | Pending |
+| GRID-04 | Phase 2 | Pending |
+| GRID-05 | Phase 5 | Pending |
+| GRID-06 | Phase 2 | Pending |
+| CFG-01 | Phase 2 | Pending |
+| CFG-02 | Phase 2 | Pending |
+| CFG-03 | Phase 2 | Pending |
+| CFG-04 | Phase 2 | Pending |
+| CFG-05 | Phase 1 | Pending |
+| WID-01 | Phase 3 | Pending |
+| WID-02 | Phase 3 | Pending |
+| WID-03 | Phase 3 | Pending |
+| WID-04 | Phase 3 | Pending |
+| BYOW-01 | Phase 4 | Pending |
+| BYOW-02 | Phase 4 | Pending |
+| BYOW-03 | Phase 4 | Pending |
+| BYOW-04 | Phase 4 | Pending |
+| BYOW-05 | Phase 4 | Pending |
+| KIOSK-01 | Phase 5 | Pending |
+| KIOSK-02 | Phase 5 | Pending |
+| KIOSK-03 | Phase 5 | Pending |
+| KIOSK-04 | Phase 5 | Pending |
 
 **Coverage:**
 - v1 requirements: 24 total
-- Mapped to phases: 0
-- Unmapped: 24 ⚠️ (populated during roadmap creation)
+- Mapped to phases: 24
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-08-07*
-*Last updated: 2026-08-07 after initial definition*
+*Last updated: 2026-08-07 after roadmap creation*
