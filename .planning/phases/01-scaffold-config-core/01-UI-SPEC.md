@@ -1,7 +1,8 @@
 ---
 phase: 1
 slug: scaffold-config-core
-status: draft
+status: approved
+reviewed_at: 2026-08-07
 shadcn_initialized: false
 preset: none
 created: 2026-08-07
