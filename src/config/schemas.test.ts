@@ -31,7 +31,8 @@ describe('validateConfig', () => {
   it('rejects version 2 and missing version (literal 1 only)', () => {
     const v2 = { ...sampleConfig(), version: 2 }
     expect(() => validateConfig(v2)).toThrow(/deskmate:config/)
-    const { version: _dropped, ...noVersion } = sampleConfig()
+    const noVersion = { ...sampleConfig() }
+    delete (noVersion as { version?: number }).version
     expect(() => validateConfig(noVersion)).toThrow(/deskmate:config/)
   })
 
