@@ -20,7 +20,7 @@
 - [ ] **CFG-02**: User can export their dashboard configuration as a downloadable JSON file
 - [ ] **CFG-03**: User can import a JSON configuration file and load that dashboard
 - [ ] **CFG-04**: User can open a unique display URL that renders the exact configuration on any device
-- [ ] **CFG-05**: Corrupt, invalid, or version-mismatched configs fail gracefully with validation and recovery (never brick the dashboard)
+- [x] **CFG-05**: Corrupt, invalid, or version-mismatched configs fail gracefully with validation and recovery (never brick the dashboard)
 
 ### Native Widgets (WID)
 
@@ -90,7 +90,7 @@ Deferred to a future release. Tracked but not in the current roadmap.
 | CFG-02 | Phase 2 | Pending |
 | CFG-03 | Phase 2 | Pending |
 | CFG-04 | Phase 2 | Pending |
-| CFG-05 | Phase 1 | Pending |
+| CFG-05 | Phase 1 | Complete |
 | WID-01 | Phase 3 | Pending |
 | WID-02 | Phase 3 | Pending |
 | WID-03 | Phase 3 | Pending |
@@ -106,6 +106,7 @@ Deferred to a future release. Tracked but not in the current roadmap.
 | KIOSK-04 | Phase 5 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 24 total
 - Mapped to phases: 24
 - Unmapped: 0 ✓
