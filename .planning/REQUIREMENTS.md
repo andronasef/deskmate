@@ -11,7 +11,7 @@
 - [x] **GRID-02**: User can remove widgets from their dashboard grid
 - [x] **GRID-03**: User can resize widgets in the grid
 - [x] **GRID-04**: User can drag-and-drop widgets to rearrange their positions in the grid
-- [ ] **GRID-05**: User can view a single full-screen widget on narrow/mobile screens
+- [x] **GRID-05**: User can view a single full-screen widget on narrow/mobile screens
 - [x] **GRID-06**: Grid layouts reflow responsively across phone, tablet, and monitor breakpoints
 
 ### Config & Transports (CFG)
@@ -39,10 +39,10 @@
 
 ### Kiosk & Display (KIOSK)
 
-- [ ] **KIOSK-01**: User can launch a dashboard fullscreen with the Screen Wake Lock API active
-- [ ] **KIOSK-02**: Wake lock re-acquires on visibility change and degrades gracefully (feature-detect + fallback) on unsupported devices
-- [ ] **KIOSK-03**: User can install DeskMate as a PWA (web manifest + icons)
-- [ ] **KIOSK-04**: User sees status indicators for widget failures, GitHub rate-limit exhaustion, and stale data
+- [x] **KIOSK-01**: User can launch a dashboard fullscreen with the Screen Wake Lock API active
+- [x] **KIOSK-02**: Wake lock re-acquires on visibility change and degrades gracefully (feature-detect + fallback) on unsupported devices
+- [x] **KIOSK-03**: User can install DeskMate as a PWA (web manifest + icons)
+- [x] **KIOSK-04**: User sees status indicators for widget failures, GitHub rate-limit exhaustion, and stale data
 
 ## v2 Requirements
 
@@ -84,7 +84,7 @@ Deferred to a future release. Tracked but not in the current roadmap.
 | GRID-02 | Phase 2 | Complete |
 | GRID-03 | Phase 2 | Complete |
 | GRID-04 | Phase 2 | Complete |
-| GRID-05 | Phase 5 | Pending |
+| GRID-05 | Phase 5 | Complete |
 | GRID-06 | Phase 2 | Complete |
 | CFG-01 | Phase 2 | Complete |
 | CFG-02 | Phase 2 | Complete |
@@ -100,10 +100,10 @@ Deferred to a future release. Tracked but not in the current roadmap.
 | BYOW-03 | Phase 4 | Complete |
 | BYOW-04 | Phase 4 | Complete |
 | BYOW-05 | Phase 4 | Complete |
-| KIOSK-01 | Phase 5 | Pending |
-| KIOSK-02 | Phase 5 | Pending |
-| KIOSK-03 | Phase 5 | Pending |
-| KIOSK-04 | Phase 5 | Pending |
+| KIOSK-01 | Phase 5 | Complete |
+| KIOSK-02 | Phase 5 | Complete |
+| KIOSK-03 | Phase 5 | Complete |
+| KIOSK-04 | Phase 5 | Complete |
 
 **Coverage:**
 

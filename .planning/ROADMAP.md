@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Grid, Persistence & Config Transports** - Drag-and-drop grid, localStorage persistence, JSON export/import, and unique display URLs — the Core Value end-to-end (completed 2026-08-16)
 - [x] **Phase 3: Native Widgets** - Desk Clock & Date, Pomodoro Focus Timer, GitHub Pulse, plus the theme system and graceful live-data failure (completed 2026-08-16)
 - [x] **Phase 4: Sandbox & BYOW** - Sandboxed iframe renderer, validated postMessage bridge, and the in-browser custom widget editor — the open ecosystem (completed 2026-08-16)
-- [ ] **Phase 5: Kiosk & Polish** - Fullscreen + wake lock, single-widget mobile view, status indicators, PWA installability, and on-hardware soak
+- [x] **Phase 5: Kiosk & Polish** - Fullscreen + wake lock, single-widget mobile view, status indicators, PWA installability, and on-hardware soak (completed 2026-08-16)
 
 ## Phase Details
 
@@ -123,8 +123,8 @@ Plans:
 
 Plans:
 
-- [ ] 05-01: Research spike — wake-lock behavior on target device classes (iOS < 16.4 fallback copy, Low Power Mode rejection, HTTPS-only serving note) + FullscreenService + WakeLockService (feature-detect, visibilitychange re-acquire, sentinel release handling)
-- [ ] 05-02: Single-widget mobile fullscreen view + widget status indicators + PWA manifest/icons + on-hardware soak (24 h run, frame-time logging, memory sampling, 6× CPU throttle check)
+- [x] 05-01: Research spike — wake-lock behavior on target device classes (iOS < 16.4 fallback copy, Low Power Mode rejection, HTTPS-only serving note) + FullscreenService + WakeLockService (feature-detect, visibilitychange re-acquire, sentinel release handling)
+- [x] 05-02: Single-widget mobile fullscreen view + widget status indicators + PWA manifest/icons + on-hardware soak (24 h run, frame-time logging, memory sampling, 6× CPU throttle check)
 
 ## Progress
 
@@ -137,6 +137,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Grid, Persistence & Transports | 3/3 | Complete    | 2026-08-16 |
 | 3. Native Widgets | 3/3 | Complete    | 2026-08-16 |
 | 4. Sandbox & BYOW | 3/3 | Complete    | 2026-08-16 |
-| 5. Kiosk & Polish | 0/2 | Not started | - |
+| 5. Kiosk & Polish | 2/2 | Complete    | 2026-08-16 |
 
 *Plan counts are initial estimates (granularity: coarse, 1-3 plans per phase); refined during plan-phase.*
