@@ -1,5 +1,5 @@
 .header {
-  height: var(--space-2xl);
+  min-height: var(--space-2xl);
   width: 100%;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -7,7 +7,21 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-md);
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+/* Narrow screens (GRID-05 range): let the toolbar drop to its own row. */
+@media (max-width: 480px) {
+  .header {
+    padding: var(--space-xs) var(--space-sm);
+    flex-wrap: wrap;
+  }
+
+  .toolbar {
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
 }
 
 .wordmark {

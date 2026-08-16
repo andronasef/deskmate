@@ -1,5 +1,5 @@
 import { Responsive, useContainerWidth, type Layout, type ResponsiveLayouts } from 'react-grid-layout'
-import { useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
 import { useConfigStore } from '../config/store.ts'
 import { GRID_BREAKPOINTS, GRID_COLS } from '../config/defaultConfig.ts'
 import { WidgetFrame } from './WidgetFrame.tsx'
@@ -126,7 +126,7 @@ export function DashboardGrid({ editMode, configOverride, onEditCustom }: Dashbo
 // Re-export for type consumers.
 export type { LayoutItem, WidgetInstance }
 
-interface GridItemBodyProps {
+interface GridItemBodyProps extends Pick<React.HTMLAttributes<HTMLDivElement>, 'className' | 'style'> {
   widget: WidgetInstance
   theme: { accent: string }
   interactive: boolean
@@ -137,8 +137,10 @@ interface GridItemBodyProps {
   setOpenSettingsId: (id: string | null) => void
 }
 
-/** One grid cell: lazy-mounts custom-widget iframes until near-visible (D-4.14). */
-function GridItemBody(props: GridItemBodyProps) {
+/** One grid cell: lazy-mounts custom-widget iframes until near-visible (D-4.14).
+ *  Forwards RGL's cloned positioning props (className/style/ref) — GridItem clones
+ *  its direct child and expects them to reach a DOM node. */
+const GridItemBody = forwardRef<HTMLDivElement, GridItemBodyProps>(function GridItemBody(props, rglRef) {
   const { widget, theme, interactive, onRemove, openSettings, onSettingsSave, openSettingsId, setOpenSettingsId } = props
   const wrapRef = useRef<HTMLDivElement>(null)
   const near = useLazyMount(wrapRef)
@@ -146,8 +148,9 @@ function GridItemBody(props: GridItemBodyProps) {
   const definition = WIDGET_REGISTRY[widget.type]
 
   return (
-    <div key={widget.id} className={styles.itemWrap} ref={wrapRef}>
-      <WidgetFrame
+    <div ref={rglRef} className={props.className ? `${props.className} ${styles.itemWrap}` : styles.itemWrap} style={props.style}>
+      <div ref={wrapRef} className={styles.itemInner}>
+        <WidgetFrame
         widget={widget}
         theme={theme}
         editMode={interactive}
@@ -170,6 +173,7 @@ function GridItemBody(props: GridItemBodyProps) {
           onClose={() => setOpenSettingsId(null)}
         />
       )}
+      </div>
     </div>
   )
-}
+})

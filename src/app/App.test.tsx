@@ -20,6 +20,19 @@ describe('App shell', () => {
     expect(screen.getByLabelText('Start')).toBeInTheDocument()
   })
 
+  it('positions widget cells via RGL — wrappers receive the react-grid-item class and inline style', async () => {
+    // Regression: GridItemBody must forward RGL's cloned className/style onto the DOM.
+    // If a custom child component drops those props, items render unpositioned full-width
+    // stacked (the bug jsdom can't catch via layout — only via the missing class).
+    render(<App />)
+    await waitFor(() => expect(screen.getByTestId('clock-time')).toBeInTheDocument())
+    const items = document.querySelectorAll('.react-grid-layout > .react-grid-item')
+    expect(items.length).toBe(3)
+    items.forEach((el) => {
+      expect(el.getAttribute('style')).toMatch(/transform|top|width/)
+    })
+  })
+
   it('renders the transport toolbar (Export / Import / Edit)', async () => {
     render(<App />)
     expect(screen.getByTitle('Export config')).toBeInTheDocument()
