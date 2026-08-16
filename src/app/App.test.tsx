@@ -2,21 +2,22 @@ import { render, screen, waitFor } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import App from './App.tsx'
 
-// Note: App hydrates the persist store async; the default (empty) localStorage
-// yields the seeded default config, so the grid renders the 3 seeded widgets.
+// App hydrates the persist store async; default (empty) localStorage yields the seeded
+// default config → the grid renders the 3 seeded widgets with real registry bodies.
 
 describe('App shell', () => {
   it('renders the DeskMate wordmark in the header', async () => {
     render(<App />)
     expect(screen.getByText('DeskMate')).toBeInTheDocument()
-    await waitFor(() => expect(screen.getByText('Clock')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByTestId('clock-time')).toBeInTheDocument())
   })
 
-  it('renders the seeded widgets in the grid (default first-run dashboard)', async () => {
+  it('renders the seeded widget bodies in the grid (clock ticks, pomodoro controls)', async () => {
     render(<App />)
-    await waitFor(() => expect(screen.getByText('Clock')).toBeInTheDocument())
-    expect(screen.getByText('GitHub Pulse')).toBeInTheDocument()
-    expect(screen.getByText('Pomodoro')).toBeInTheDocument()
+    await waitFor(() => expect(screen.getByTestId('clock-time')).toBeInTheDocument())
+    expect(screen.getByTestId('clock-date')).toBeInTheDocument()
+    expect(screen.getByTestId('pomodoro-countdown')).toBeInTheDocument()
+    expect(screen.getByLabelText('Start')).toBeInTheDocument()
   })
 
   it('renders the transport toolbar (Export / Import / Edit)', async () => {
@@ -28,12 +29,13 @@ describe('App shell', () => {
 
   it('reveals Add Widget and widget chrome only in edit mode', async () => {
     render(<App />)
-    await waitFor(() => expect(screen.getByText('Clock')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByTestId('clock-time')).toBeInTheDocument())
     expect(screen.queryByText('Add Widget')).not.toBeInTheDocument()
 
     screen.getByText('Edit').click()
     await waitFor(() => expect(screen.getByText('Add Widget')).toBeInTheDocument())
     expect(screen.getAllByTitle('Remove widget')).toHaveLength(3)
+    expect(screen.getAllByLabelText(/Settings for/)).toHaveLength(3)
     expect(screen.getByText('Done')).toBeInTheDocument()
   })
 })

@@ -1,7 +1,7 @@
 import { Plus } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useConfigStore } from '../config/store.ts'
-import { WIDGET_META } from './widgetMeta.ts'
+import { WIDGET_REGISTRY } from '../widgets/registry.tsx'
 import styles from './AddWidget.module.css'
 
 /** "Add Widget" header button + catalog popover (D-2.03, UI-SPEC). */
@@ -45,7 +45,7 @@ export function AddWidgetButton() {
       </button>
       {open && (
         <div className={styles.popover} role="menu" data-add-widget-popover>
-          {Object.entries(WIDGET_META).map(([type, meta]) => (
+          {Object.entries(WIDGET_REGISTRY).map(([type, definition]) => (
             <button
               type="button"
               key={type}
@@ -53,8 +53,8 @@ export function AddWidgetButton() {
               role="menuitem"
               onClick={() => handlePick(type)}
             >
-              <span className={styles.rowName}>{meta.name}</span>
-              <span className={styles.rowDesc}>{meta.description}</span>
+              <span className={styles.rowName}>{definition.name}</span>
+              <span className={styles.rowDesc}>{definition.description}</span>
             </button>
           ))}
         </div>

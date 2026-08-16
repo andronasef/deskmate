@@ -1,5 +1,6 @@
 import { Download, Upload, X } from 'lucide-react'
 import { useCallback, useRef, useState } from 'react'
+import '../widgets/index.tsx' // registers native widgets into WIDGET_REGISTRY (D-3.01)
 import styles from './App.module.css'
 import bannerStyles from './SharedConfigBanner.module.css'
 import { useConfigStore } from '../config/store.ts'

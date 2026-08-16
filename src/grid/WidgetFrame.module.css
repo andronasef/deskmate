@@ -38,12 +38,35 @@
   z-index: 10;
 }
 
+.settings {
+  position: absolute;
+  top: 6px;
+  right: 44px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: var(--space-sm);
+  background: var(--surface-raised);
+  color: var(--text-muted);
+  cursor: pointer;
+  z-index: 10;
+}
+
 .remove:hover {
   color: var(--destructive);
   border-color: var(--destructive);
 }
 
-.remove:focus-visible {
+.settings:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.remove:focus-visible,
+.settings:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }

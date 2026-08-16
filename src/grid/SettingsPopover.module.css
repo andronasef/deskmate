@@ -1,0 +1,110 @@
+.popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 6px;
+  width: 260px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--space-sm);
+  padding: var(--space-md);
+  z-index: 50;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.fieldLabel {
+  color: var(--text-muted);
+}
+
+.field input[type='text'],
+.field input[type='number'],
+.field select {
+  width: 130px;
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.field input[type='checkbox'] {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+}
+
+.field input:focus-visible,
+.field select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.cancel,
+.save {
+  height: 32px;
+  padding: 0 var(--space-sm);
+  border-radius: var(--space-sm);
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.cancel {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.save {
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+}
+
+.save:hover {
+  background: var(--accent);
+  color: var(--background);
+}
+
+.cancel:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+.cancel:focus-visible,
+.save:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

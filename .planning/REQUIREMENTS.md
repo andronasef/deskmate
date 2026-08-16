@@ -7,19 +7,19 @@
 
 ### Grid & Layout (GRID)
 
-- [ ] **GRID-01**: User can add widgets to their dashboard grid
-- [ ] **GRID-02**: User can remove widgets from their dashboard grid
-- [ ] **GRID-03**: User can resize widgets in the grid
-- [ ] **GRID-04**: User can drag-and-drop widgets to rearrange their positions in the grid
+- [x] **GRID-01**: User can add widgets to their dashboard grid
+- [x] **GRID-02**: User can remove widgets from their dashboard grid
+- [x] **GRID-03**: User can resize widgets in the grid
+- [x] **GRID-04**: User can drag-and-drop widgets to rearrange their positions in the grid
 - [ ] **GRID-05**: User can view a single full-screen widget on narrow/mobile screens
-- [ ] **GRID-06**: Grid layouts reflow responsively across phone, tablet, and monitor breakpoints
+- [x] **GRID-06**: Grid layouts reflow responsively across phone, tablet, and monitor breakpoints
 
 ### Config & Transports (CFG)
 
-- [ ] **CFG-01**: User's dashboard configuration persists across browser reloads (localStorage)
-- [ ] **CFG-02**: User can export their dashboard configuration as a downloadable JSON file
-- [ ] **CFG-03**: User can import a JSON configuration file and load that dashboard
-- [ ] **CFG-04**: User can open a unique display URL that renders the exact configuration on any device
+- [x] **CFG-01**: User's dashboard configuration persists across browser reloads (localStorage)
+- [x] **CFG-02**: User can export their dashboard configuration as a downloadable JSON file
+- [x] **CFG-03**: User can import a JSON configuration file and load that dashboard
+- [x] **CFG-04**: User can open a unique display URL that renders the exact configuration on any device
 - [x] **CFG-05**: Corrupt, invalid, or version-mismatched configs fail gracefully with validation and recovery (never brick the dashboard)
 
 ### Native Widgets (WID)
@@ -80,16 +80,16 @@ Deferred to a future release. Tracked but not in the current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| GRID-01 | Phase 2 | Pending |
-| GRID-02 | Phase 2 | Pending |
-| GRID-03 | Phase 2 | Pending |
-| GRID-04 | Phase 2 | Pending |
+| GRID-01 | Phase 2 | Complete |
+| GRID-02 | Phase 2 | Complete |
+| GRID-03 | Phase 2 | Complete |
+| GRID-04 | Phase 2 | Complete |
 | GRID-05 | Phase 5 | Pending |
-| GRID-06 | Phase 2 | Pending |
-| CFG-01 | Phase 2 | Pending |
-| CFG-02 | Phase 2 | Pending |
-| CFG-03 | Phase 2 | Pending |
-| CFG-04 | Phase 2 | Pending |
+| GRID-06 | Phase 2 | Complete |
+| CFG-01 | Phase 2 | Complete |
+| CFG-02 | Phase 2 | Complete |
+| CFG-03 | Phase 2 | Complete |
+| CFG-04 | Phase 2 | Complete |
 | CFG-05 | Phase 1 | Complete |
 | WID-01 | Phase 3 | Pending |
 | WID-02 | Phase 3 | Pending |

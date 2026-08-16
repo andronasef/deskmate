@@ -14,7 +14,7 @@ DeskMate turns idle screens into customizable smart dashboards. The roadmap buil
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Scaffold & Config Core** - Vite/React/TS scaffold plus the single validated `DashboardConfig` schema, store, and versioned storage adapter — the contract every later phase reuses (completed 2026-08-16)
-- [ ] **Phase 2: Grid, Persistence & Config Transports** - Drag-and-drop grid, localStorage persistence, JSON export/import, and unique display URLs — the Core Value end-to-end
+- [x] **Phase 2: Grid, Persistence & Config Transports** - Drag-and-drop grid, localStorage persistence, JSON export/import, and unique display URLs — the Core Value end-to-end (completed 2026-08-16)
 - [ ] **Phase 3: Native Widgets** - Desk Clock & Date, Pomodoro Focus Timer, GitHub Pulse, plus the theme system and graceful live-data failure
 - [ ] **Phase 4: Sandbox & BYOW** - Sandboxed iframe renderer, validated postMessage bridge, and the in-browser custom widget editor — the open ecosystem
 - [ ] **Phase 5: Kiosk & Polish** - Fullscreen + wake lock, single-widget mobile view, status indicators, PWA installability, and on-hardware soak
@@ -58,9 +58,9 @@ Plans:
 
 Plans:
 
-- [ ] 02-01: DashboardGrid + WidgetFrame (react-grid-layout v2, `mounted`-gated width, add/remove/resize/drag with atomic store actions, responsive breakpoints, first-run default config render)
-- [ ] 02-02: Persistence + transports — debounced localStorage, JSON export/import, URL codec (lz-string + hard size cap + export fallback), migration/backup hardening, layout sanitization
-- [ ] 02-03: Research probe — deploy-host request-line limit probe page to empirically verify the URL size cap (CDNs/proxies may be stricter than nginx 8 KB)
+- [x] 02-01: DashboardGrid + WidgetFrame (react-grid-layout v2, `mounted`-gated width, add/remove/resize/drag with atomic store actions, responsive breakpoints, first-run default config render)
+- [x] 02-02: Persistence + transports — debounced localStorage, JSON export/import, URL codec (lz-string + hard size cap + export fallback), migration/backup hardening, layout sanitization
+- [x] 02-03: Research probe — deploy-host request-line limit probe page to empirically verify the URL size cap (CDNs/proxies may be stricter than nginx 8 KB)
 
 ### Phase 3: Native Widgets
 
@@ -134,7 +134,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Scaffold & Config Core | 2/2 | Complete    | 2026-08-16 |
-| 2. Grid, Persistence & Transports | 0/3 | Not started | - |
+| 2. Grid, Persistence & Transports | 3/3 | Complete    | 2026-08-16 |
 | 3. Native Widgets | 0/3 | Not started | - |
 | 4. Sandbox & BYOW | 0/3 | Not started | - |
 | 5. Kiosk & Polish | 0/2 | Not started | - |

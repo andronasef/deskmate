@@ -1,10 +1,11 @@
 import { Responsive, useContainerWidth, type Layout, type ResponsiveLayouts } from 'react-grid-layout'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useConfigStore } from '../config/store.ts'
 import { GRID_BREAKPOINTS, GRID_COLS } from '../config/defaultConfig.ts'
 import { WidgetFrame } from './WidgetFrame.tsx'
-import { widgetName } from './widgetMeta.ts'
-import type { DashboardConfig, LayoutMap } from '../config/types.ts'
+import { SettingsPopover } from './SettingsPopover.tsx'
+import { renderWidget, WIDGET_REGISTRY } from '../widgets/registry.tsx'
+import type { DashboardConfig, LayoutItem, LayoutMap, WidgetInstance } from '../config/types.ts'
 import styles from './DashboardGrid.module.css'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
@@ -16,15 +17,17 @@ interface DashboardGridProps {
 }
 
 /**
- * Responsive multi-widget grid (GRID-01…04, GRID-06) bound to the config store.
+ * Responsive multi-widget grid (GRID-01…06) bound to the config store.
  * RGL v2 hooks: useContainerWidth (mounted-gated, D-2.08) + Responsive.
- * Drag/resize enabled only in edit mode (D-2.01/D-2.02).
+ * Widget bodies render via the registry (D-3.04); chrome gated to edit mode.
  */
 export function DashboardGrid({ editMode, configOverride }: DashboardGridProps) {
   const storeConfig = useConfigStore((s) => s.config)
   const setLayout = useConfigStore((s) => s.setLayout)
   const removeWidget = useConfigStore((s) => s.removeWidget)
+  const updateWidget = useConfigStore((s) => s.updateWidget)
   const { width, containerRef, mounted } = useContainerWidth()
+  const [openSettingsId, setOpenSettingsId] = useState<string | null>(null)
 
   const config = configOverride ?? storeConfig
   // In shared view the grid is read-only (the banner owns save/exit, D-2.11).
@@ -32,15 +35,15 @@ export function DashboardGrid({ editMode, configOverride }: DashboardGridProps) 
 
   // Guard the onLayoutChange feedback loop: RGL fires it programmatically on
   // mount/breakpoint change; only persist layouts that differ from what we last rendered.
-  // (Ref is updated in an effect — never during render.)
   const lastLayoutsRef = useRef<string>(JSON.stringify(config.layout))
-
-  const widgets = config.widgets
-  const layouts = config.layout
 
   useEffect(() => {
     lastLayoutsRef.current = JSON.stringify(config.layout)
   }, [config.layout])
+
+  const widgets = config.widgets
+  const layouts = config.layout
+  const theme = { accent: config.theme.accent }
 
   const handleLayoutChange = (_layout: Layout, newLayouts: ResponsiveLayouts) => {
     const serialized = JSON.stringify(newLayouts)
@@ -56,6 +59,13 @@ export function DashboardGrid({ editMode, configOverride }: DashboardGridProps) 
     }
     setLayout(mutable)
   }
+
+  const handleSettingsSave = (id: string, settings: Record<string, unknown>) => {
+    updateWidget(id, settings)
+    setOpenSettingsId(null)
+  }
+
+  const openSettings = (widget: WidgetInstance) => setOpenSettingsId(widget.id)
 
   return (
     <div ref={containerRef} className={styles.container} data-edit-mode={interactive}>
@@ -73,13 +83,24 @@ export function DashboardGrid({ editMode, configOverride }: DashboardGridProps) 
           className={styles.grid}
         >
           {widgets.map((widget) => (
-            <div key={widget.id}>
-              <WidgetFrame widget={widget} editMode={interactive} onRemove={removeWidget}>
-                <div className={styles.placeholderBody}>
-                  <span className={styles.placeholderTitle}>{widgetName(widget)}</span>
-                  <span className={styles.placeholderHint}>Widget rendering arrives in Phase 3</span>
-                </div>
+            <div key={widget.id} className={styles.itemWrap}>
+              <WidgetFrame
+                widget={widget}
+                theme={theme}
+                editMode={interactive}
+                onRemove={removeWidget}
+                onSettings={interactive ? openSettings : undefined}
+              >
+                {renderWidget(widget, theme, interactive)}
               </WidgetFrame>
+              {openSettingsId === widget.id && WIDGET_REGISTRY[widget.type] != null && (
+                <SettingsPopover
+                  widget={widget}
+                  definition={WIDGET_REGISTRY[widget.type]!}
+                  onSave={handleSettingsSave}
+                  onClose={() => setOpenSettingsId(null)}
+                />
+              )}
             </div>
           ))}
         </Responsive>
@@ -99,3 +120,6 @@ export function DashboardGrid({ editMode, configOverride }: DashboardGridProps) 
     </div>
   )
 }
+
+// Re-export for type consumers.
+export type { LayoutItem, WidgetInstance }
