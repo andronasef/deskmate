@@ -38,6 +38,16 @@ function safeSet(key: string, value: string): void {
   }
 }
 
+export function safeRemove(key: string): void {
+  try {
+    localStorage.removeItem(key)
+  } catch {
+    console.warn(`[deskmate:storage] failed to remove ${key} — storage unavailable`)
+  }
+}
+
+export { safeGet, safeSet }
+
 export function backupRaw(raw: string): void {
   if (safeGet(BACKUP_KEY) !== raw) {
     safeSet(BACKUP_KEY, raw)
@@ -86,4 +96,32 @@ function warnRejected(version: string, reason: string, raw: string): void {
 
 export function saveConfig(config: DashboardConfig): void {
   safeSet(STORAGE_KEY, JSON.stringify(config))
+}
+
+// Debounced save helpers (D-2.13): coalesce high-frequency config writes (e.g. grid
+// gestures) into one localStorage write per delay window.
+const saveTimers = new Map<string, { timer: ReturnType<typeof setTimeout>; config: DashboardConfig }>()
+
+export function saveConfigDebounced(config: DashboardConfig, delayMs = 500): void {
+  const existing = saveTimers.get(STORAGE_KEY)
+  if (existing != null) {
+    clearTimeout(existing.timer)
+  }
+  const entry = {
+    config,
+    timer: setTimeout(() => {
+      saveTimers.delete(STORAGE_KEY)
+      saveConfig(entry.config)
+    }, delayMs),
+  }
+  saveTimers.set(STORAGE_KEY, entry)
+}
+
+export function flushConfigSave(): void {
+  const existing = saveTimers.get(STORAGE_KEY)
+  if (existing != null) {
+    clearTimeout(existing.timer)
+    saveTimers.delete(STORAGE_KEY)
+    saveConfig(existing.config)
+  }
 }

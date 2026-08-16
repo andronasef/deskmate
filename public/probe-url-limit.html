@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DeskMate — URL Request-Line Limit Probe</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        background: #0a0d12;
+        color: #e6eaf0;
+        max-width: 640px;
+        margin: 48px auto;
+        padding: 0 16px;
+      }
+      h1 { font-size: 20px; }
+      p { color: #8a93a0; }
+      table { border-collapse: collapse; width: 100%; margin-top: 16px; }
+      th, td { border: 1px solid #232b36; padding: 8px 12px; text-align: left; font-size: 14px; }
+      th { background: #141a22; }
+      a { color: #22d3ee; }
+      .result { margin-top: 24px; padding: 16px; border: 1px solid #232b36; border-radius: 8px; background: #141a22; }
+      .result .accepted { color: #22d3ee; font-weight: 600; }
+      code { background: #141a22; padding: 2px 6px; border-radius: 4px; }
+    </style>
+  </head>
+  <body>
+    <h1>DeskMate — URL request-line limit probe</h1>
+    <p>
+      This page empirically measures how long a query string your host accepts before rejecting the
+      request (414 / 431 / proxy error). Click each length below. If the page loads with
+      <em>accepted: N bytes</em>, the host accepted that payload. If the browser shows an error
+      page, the host rejected it at or below that length.
+    </p>
+    <p>
+      DeskMate's display-URL transport caps compressed configs at <code>4096</code> bytes
+      (<code>URL_CONFIG_CAP</code>). Record the largest accepted length in
+      <code>02-03-FINDINGS.md</code>.
+    </p>
+
+    <div id="result" class="result" hidden>
+      <span id="resultText"></span>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Target length</th><th>Probe link</th></tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+
+    <script>
+      const LENGTHS = [1024, 2048, 3072, 4096, 5120, 6144, 8192, 10240, 16384, 32768]
+
+      function chunk(length) {
+        // Repetitive 'a' chars survive URL encoding unchanged and are 1 byte each in UTF-8.
+        return 'a'.repeat(length)
+      }
+
+      function currentLength() {
+        const m = /probe=(\d+)/.exec(location.search)
+        return m ? parseInt(m[1], 10) : 0
+      }
+
+      const rows = document.getElementById('rows')
+      for (const len of LENGTHS) {
+        const tr = document.createElement('tr')
+        const tdLen = document.createElement('td')
+        tdLen.textContent = len.toLocaleString() + ' bytes'
+        const tdLink = document.createElement('td')
+        const a = document.createElement('a')
+        a.href = '?probe=' + len + '&payload=' + chunk(len)
+        a.textContent = 'probe ' + len.toLocaleString()
+        tdLink.appendChild(a)
+        tr.appendChild(tdLen)
+        tr.appendChild(tdLink)
+        rows.appendChild(tr)
+      }
+
+      const measured = currentLength()
+      if (measured > 0) {
+        const result = document.getElementById('result')
+        const text = document.getElementById('resultText')
+        result.hidden = false
+        const total = location.search.length
+        if (total > 0) {
+          text.innerHTML =
+            'accepted: <span class="accepted">' +
+            total.toLocaleString() +
+            ' bytes</span> (query string ' +
+            measured.toLocaleString() +
+            ' bytes + overhead).<br />' +
+            'If you can see this message, the host accepted this payload. Try the next length up.'
+        }
+      }
+    </script>
+  </body>
+</html>
