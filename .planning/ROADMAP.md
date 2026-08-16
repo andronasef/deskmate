@@ -13,7 +13,7 @@ DeskMate turns idle screens into customizable smart dashboards. The roadmap buil
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Scaffold & Config Core** - Vite/React/TS scaffold plus the single validated `DashboardConfig` schema, store, and versioned storage adapter — the contract every later phase reuses
+- [x] **Phase 1: Scaffold & Config Core** - Vite/React/TS scaffold plus the single validated `DashboardConfig` schema, store, and versioned storage adapter — the contract every later phase reuses (completed 2026-08-16)
 - [ ] **Phase 2: Grid, Persistence & Config Transports** - Drag-and-drop grid, localStorage persistence, JSON export/import, and unique display URLs — the Core Value end-to-end
 - [ ] **Phase 3: Native Widgets** - Desk Clock & Date, Pomodoro Focus Timer, GitHub Pulse, plus the theme system and graceful live-data failure
 - [ ] **Phase 4: Sandbox & BYOW** - Sandboxed iframe renderer, validated postMessage bridge, and the in-browser custom widget editor — the open ecosystem
@@ -133,7 +133,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Scaffold & Config Core | 0/2 | Not started | - |
+| 1. Scaffold & Config Core | 2/2 | Complete    | 2026-08-16 |
 | 2. Grid, Persistence & Transports | 0/3 | Not started | - |
 | 3. Native Widgets | 0/3 | Not started | - |
 | 4. Sandbox & BYOW | 0/3 | Not started | - |
