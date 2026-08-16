@@ -38,7 +38,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 
 - [x] 01-01: Vite 8 + React 19 + TypeScript 6.0.3 scaffold (override default TS 7), lint/type toolchain, static app shell that boots and renders a default dashboard shell
-- [ ] 01-02: Config core — zod `DashboardConfig` schema, `defaultConfig.ts`, zustand store, versioned storage adapter with validate-on-load + recovery/backup (CFG-05)
+- [x] 01-02: Config core — zod `DashboardConfig` schema, `defaultConfig.ts`, zustand store, versioned storage adapter with validate-on-load + recovery/backup (CFG-05)
 
 ### Phase 2: Grid, Persistence & Config Transports
 
