@@ -4,6 +4,8 @@ import { registerWidget } from './registry.tsx'
 import { ClockWidget } from './clock.tsx'
 import { PomodoroWidget } from './pomodoro.tsx'
 import { GitHubPulseWidget } from './githubPulse.tsx'
+import { IframeWidgetRenderer } from './sandbox/IframeWidgetRenderer.tsx'
+import { WIDGET_CODE_TEMPLATE } from './byow/template.ts'
 
 registerWidget('clock', {
   name: 'Clock',
@@ -31,4 +33,12 @@ registerWidget('github-pulse', {
   defaultSettings: { repos: 'facebook/react' },
   settingsFields: [{ key: 'repos', label: 'Repos', type: 'text', placeholder: 'owner/repo, owner/repo' }],
   render: ({ widget }) => <GitHubPulseWidget widget={widget} />,
+})
+
+registerWidget('custom', {
+  name: 'Custom Widget',
+  description: 'Bring your own HTML, CSS, and JS',
+  defaultSettings: { ...WIDGET_CODE_TEMPLATE },
+  settingsFields: [], // code editing happens in the BYOW drawer, not the settings popover
+  render: ({ widget, theme }) => <IframeWidgetRenderer widget={widget} theme={theme} />,
 })

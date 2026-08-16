@@ -24,10 +24,10 @@
 
 ### Native Widgets (WID)
 
-- [ ] **WID-01**: User can use the Desk Clock & Date widget with customizable typography and theme colors
-- [ ] **WID-02**: User can use the Pomodoro Focus Timer widget with a large readable countdown and audio chime
-- [ ] **WID-03**: User can use the GitHub Pulse widget showing repo stars, open issues, and commit streaks via the public GitHub API
-- [ ] **WID-04**: Live-data widgets auto-refresh and fail gracefully, rendering cached/stale data with a status indicator rather than a broken UI
+- [x] **WID-01**: User can use the Desk Clock & Date widget with customizable typography and theme colors
+- [x] **WID-02**: User can use the Pomodoro Focus Timer widget with a large readable countdown and audio chime
+- [x] **WID-03**: User can use the GitHub Pulse widget showing repo stars, open issues, and commit streaks via the public GitHub API
+- [x] **WID-04**: Live-data widgets auto-refresh and fail gracefully, rendering cached/stale data with a status indicator rather than a broken UI
 
 ### BYOW Extensibility (BYOW)
 
@@ -91,10 +91,10 @@ Deferred to a future release. Tracked but not in the current roadmap.
 | CFG-03 | Phase 2 | Complete |
 | CFG-04 | Phase 2 | Complete |
 | CFG-05 | Phase 1 | Complete |
-| WID-01 | Phase 3 | Pending |
-| WID-02 | Phase 3 | Pending |
-| WID-03 | Phase 3 | Pending |
-| WID-04 | Phase 3 | Pending |
+| WID-01 | Phase 3 | Complete |
+| WID-02 | Phase 3 | Complete |
+| WID-03 | Phase 3 | Complete |
+| WID-04 | Phase 3 | Complete |
 | BYOW-01 | Phase 4 | Pending |
 | BYOW-02 | Phase 4 | Pending |
 | BYOW-03 | Phase 4 | Pending |

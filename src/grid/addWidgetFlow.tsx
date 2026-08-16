@@ -1,13 +1,23 @@
 import { Plus } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useConfigStore } from '../config/store.ts'
+import { showToast } from '../components/toastStore.ts'
 import { WIDGET_REGISTRY } from '../widgets/registry.tsx'
+import { useIframeBudget, IFRAME_BUDGETS } from '../widgets/byow/useIframeBudget.ts'
 import styles from './AddWidget.module.css'
 
+interface AddWidgetButtonProps {
+  /** Custom-widget entry routes to the BYOW drawer instead of addWidget. */
+  onAddCustom?: () => void
+}
+
 /** "Add Widget" header button + catalog popover (D-2.03, UI-SPEC). */
-export function AddWidgetButton() {
+export function AddWidgetButton({ onAddCustom }: AddWidgetButtonProps) {
   const addWidget = useConfigStore((s) => s.addWidget)
-  const widgetCount = useConfigStore((s) => s.config.widgets.length)
+  const config = useConfigStore((s) => s.config)
+  const widgetCount = config.widgets.length
+  const customCount = config.widgets.filter((w) => w.type === 'custom').length
+  const budget = useIframeBudget(customCount)
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
 
@@ -27,6 +37,15 @@ export function AddWidgetButton() {
   const atCap = widgetCount >= 50
 
   const handlePick = (type: string) => {
+    if (type === 'custom') {
+      if (budget.atLimit) {
+        showToast('info', `Widget limit reached (${IFRAME_BUDGETS[budget.device]} on this device).`)
+        return
+      }
+      setOpen(false)
+      onAddCustom?.()
+      return
+    }
     addWidget(type)
     setOpen(false)
   }
@@ -45,18 +64,27 @@ export function AddWidgetButton() {
       </button>
       {open && (
         <div className={styles.popover} role="menu" data-add-widget-popover>
-          {Object.entries(WIDGET_REGISTRY).map(([type, definition]) => (
-            <button
-              type="button"
-              key={type}
-              className={styles.row}
-              role="menuitem"
-              onClick={() => handlePick(type)}
-            >
-              <span className={styles.rowName}>{definition.name}</span>
-              <span className={styles.rowDesc}>{definition.description}</span>
-            </button>
-          ))}
+          {Object.entries(WIDGET_REGISTRY).map(([type, definition]) => {
+            const budgetBlocked = type === 'custom' && budget.atLimit
+            return (
+              <button
+                type="button"
+                key={type}
+                className={styles.row}
+                role="menuitem"
+                disabled={budgetBlocked}
+                title={
+                  budgetBlocked
+                    ? `Widget limit reached (${IFRAME_BUDGETS[budget.device]} on this device).`
+                    : undefined
+                }
+                onClick={() => handlePick(type)}
+              >
+                <span className={styles.rowName}>{definition.name}</span>
+                <span className={styles.rowDesc}>{definition.description}</span>
+              </button>
+            )
+          })}
         </div>
       )}
     </div>

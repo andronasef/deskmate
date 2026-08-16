@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Scaffold & Config Core** - Vite/React/TS scaffold plus the single validated `DashboardConfig` schema, store, and versioned storage adapter — the contract every later phase reuses (completed 2026-08-16)
 - [x] **Phase 2: Grid, Persistence & Config Transports** - Drag-and-drop grid, localStorage persistence, JSON export/import, and unique display URLs — the Core Value end-to-end (completed 2026-08-16)
-- [ ] **Phase 3: Native Widgets** - Desk Clock & Date, Pomodoro Focus Timer, GitHub Pulse, plus the theme system and graceful live-data failure
+- [x] **Phase 3: Native Widgets** - Desk Clock & Date, Pomodoro Focus Timer, GitHub Pulse, plus the theme system and graceful live-data failure (completed 2026-08-16)
 - [ ] **Phase 4: Sandbox & BYOW** - Sandboxed iframe renderer, validated postMessage bridge, and the in-browser custom widget editor — the open ecosystem
 - [ ] **Phase 5: Kiosk & Polish** - Fullscreen + wake lock, single-widget mobile view, status indicators, PWA installability, and on-hardware soak
 
@@ -79,9 +79,9 @@ Plans:
 
 Plans:
 
-- [ ] 03-01: Widget registry/renderer contract + theme system (tokens → CSS variables → native widget props)
-- [ ] 03-02: Desk Clock & Date (typography/themes) + Pomodoro Focus Timer (large countdown, audio chime unlocked on first gesture)
-- [ ] 03-03: GitHub Pulse (ETag/If-None-Match cache, rate-limit header parsing, ≥3 min adaptive backoff, shared deduping client, stale-data rendering)
+- [x] 03-01: Widget registry/renderer contract + theme system (tokens → CSS variables → native widget props)
+- [x] 03-02: Desk Clock & Date (typography/themes) + Pomodoro Focus Timer (large countdown, audio chime unlocked on first gesture)
+- [x] 03-03: GitHub Pulse (ETag/If-None-Match cache, rate-limit header parsing, ≥3 min adaptive backoff, shared deduping client, stale-data rendering)
 
 ### Phase 4: Sandbox & BYOW
 
@@ -135,7 +135,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Scaffold & Config Core | 2/2 | Complete    | 2026-08-16 |
 | 2. Grid, Persistence & Transports | 3/3 | Complete    | 2026-08-16 |
-| 3. Native Widgets | 0/3 | Not started | - |
+| 3. Native Widgets | 3/3 | Complete    | 2026-08-16 |
 | 4. Sandbox & BYOW | 0/3 | Not started | - |
 | 5. Kiosk & Polish | 0/2 | Not started | - |
 

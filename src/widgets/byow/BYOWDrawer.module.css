@@ -1,0 +1,124 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 90;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.drawer {
+  width: 480px;
+  max-width: 100vw;
+  height: 100%;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-lg);
+  gap: var(--space-md);
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.cancel,
+.save {
+  height: 32px;
+  padding: 0 var(--space-sm);
+  border-radius: var(--space-sm);
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.cancel {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.save {
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+}
+
+.save:hover {
+  background: var(--accent);
+  color: var(--background);
+}
+
+.cancel:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+.cancel:focus-visible,
+.save:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  border-bottom: 1px solid var(--border);
+}
+
+.tab {
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.tab[data-active='true'] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.previewBadge {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--widget-accent, var(--accent));
+}
+
+.editor {
+  flex: 1;
+  min-height: 160px;
+  border: 1px solid var(--border);
+  border-radius: var(--space-sm);
+  overflow: hidden;
+  background: var(--surface-raised);
+}
+
+.preview {
+  height: 200px;
+  border: 1px dashed var(--border);
+  border-radius: var(--space-sm);
+  overflow: hidden;
+  background: var(--surface);
+}

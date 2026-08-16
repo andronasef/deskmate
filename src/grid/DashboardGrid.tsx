@@ -5,6 +5,7 @@ import { GRID_BREAKPOINTS, GRID_COLS } from '../config/defaultConfig.ts'
 import { WidgetFrame } from './WidgetFrame.tsx'
 import { SettingsPopover } from './SettingsPopover.tsx'
 import { renderWidget, WIDGET_REGISTRY } from '../widgets/registry.tsx'
+import { useLazyMount } from '../widgets/byow/useLazyMount.ts'
 import type { DashboardConfig, LayoutItem, LayoutMap, WidgetInstance } from '../config/types.ts'
 import styles from './DashboardGrid.module.css'
 import 'react-grid-layout/css/styles.css'
@@ -14,6 +15,8 @@ interface DashboardGridProps {
   editMode: boolean
   /** Shared-view override (CFG-04): when set, renders this config read-only instead of the store's. */
   configOverride?: DashboardConfig | null
+  /** Custom widgets route their gear to the BYOW editor drawer. */
+  onEditCustom?: (id: string) => void
 }
 
 /**
@@ -21,7 +24,7 @@ interface DashboardGridProps {
  * RGL v2 hooks: useContainerWidth (mounted-gated, D-2.08) + Responsive.
  * Widget bodies render via the registry (D-3.04); chrome gated to edit mode.
  */
-export function DashboardGrid({ editMode, configOverride }: DashboardGridProps) {
+export function DashboardGrid({ editMode, configOverride, onEditCustom }: DashboardGridProps) {
   const storeConfig = useConfigStore((s) => s.config)
   const setLayout = useConfigStore((s) => s.setLayout)
   const removeWidget = useConfigStore((s) => s.removeWidget)
@@ -65,7 +68,14 @@ export function DashboardGrid({ editMode, configOverride }: DashboardGridProps) 
     setOpenSettingsId(null)
   }
 
-  const openSettings = (widget: WidgetInstance) => setOpenSettingsId(widget.id)
+  const openSettings = (widget: WidgetInstance) => {
+    if (widget.type === 'custom') {
+      // Code editing lives in the BYOW drawer, not the field popover.
+      onEditCustom?.(widget.id)
+      return
+    }
+    setOpenSettingsId(widget.id)
+  }
 
   return (
     <div ref={containerRef} className={styles.container} data-edit-mode={interactive}>
@@ -83,25 +93,17 @@ export function DashboardGrid({ editMode, configOverride }: DashboardGridProps) 
           className={styles.grid}
         >
           {widgets.map((widget) => (
-            <div key={widget.id} className={styles.itemWrap}>
-              <WidgetFrame
-                widget={widget}
-                theme={theme}
-                editMode={interactive}
-                onRemove={removeWidget}
-                onSettings={interactive ? openSettings : undefined}
-              >
-                {renderWidget(widget, theme, interactive)}
-              </WidgetFrame>
-              {openSettingsId === widget.id && WIDGET_REGISTRY[widget.type] != null && (
-                <SettingsPopover
-                  widget={widget}
-                  definition={WIDGET_REGISTRY[widget.type]!}
-                  onSave={handleSettingsSave}
-                  onClose={() => setOpenSettingsId(null)}
-                />
-              )}
-            </div>
+            <GridItemBody
+              key={widget.id}
+              widget={widget}
+              theme={theme}
+              interactive={interactive}
+              onRemove={removeWidget}
+              openSettings={openSettings}
+              onSettingsSave={handleSettingsSave}
+              openSettingsId={openSettingsId}
+              setOpenSettingsId={setOpenSettingsId}
+            />
           ))}
         </Responsive>
       )}
@@ -123,3 +125,51 @@ export function DashboardGrid({ editMode, configOverride }: DashboardGridProps) 
 
 // Re-export for type consumers.
 export type { LayoutItem, WidgetInstance }
+
+interface GridItemBodyProps {
+  widget: WidgetInstance
+  theme: { accent: string }
+  interactive: boolean
+  onRemove: (id: string) => void
+  openSettings: (widget: WidgetInstance) => void
+  onSettingsSave: (id: string, settings: Record<string, unknown>) => void
+  openSettingsId: string | null
+  setOpenSettingsId: (id: string | null) => void
+}
+
+/** One grid cell: lazy-mounts custom-widget iframes until near-visible (D-4.14). */
+function GridItemBody(props: GridItemBodyProps) {
+  const { widget, theme, interactive, onRemove, openSettings, onSettingsSave, openSettingsId, setOpenSettingsId } = props
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const near = useLazyMount(wrapRef)
+  const isCustom = widget.type === 'custom'
+  const definition = WIDGET_REGISTRY[widget.type]
+
+  return (
+    <div key={widget.id} className={styles.itemWrap} ref={wrapRef}>
+      <WidgetFrame
+        widget={widget}
+        theme={theme}
+        editMode={interactive}
+        onRemove={onRemove}
+        onSettings={interactive ? openSettings : undefined}
+      >
+        {isCustom && !near ? (
+          <div className={styles.lazyPlaceholder} data-lazy-mount>
+            <span>Custom widget</span>
+          </div>
+        ) : (
+          renderWidget(widget, theme, interactive)
+        )}
+      </WidgetFrame>
+      {openSettingsId === widget.id && definition != null && (
+        <SettingsPopover
+          widget={widget}
+          definition={definition}
+          onSave={onSettingsSave}
+          onClose={() => setOpenSettingsId(null)}
+        />
+      )}
+    </div>
+  )
+}

@@ -10,7 +10,7 @@ function makeWidget(type: string, settings: Record<string, unknown> = {}): Widge
 
 describe('WIDGET_REGISTRY (D-3.01/3.02)', () => {
   it('maps all three native types to definitions with render + settings fields', () => {
-    expect(Object.keys(WIDGET_REGISTRY).sort()).toEqual(['clock', 'github-pulse', 'pomodoro'])
+    expect(Object.keys(WIDGET_REGISTRY).sort()).toEqual(['clock', 'custom', 'github-pulse', 'pomodoro'])
     for (const def of Object.values(WIDGET_REGISTRY)) {
       expect(typeof def.render).toBe('function')
       expect(def.name.length).toBeGreaterThan(0)

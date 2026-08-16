@@ -7,6 +7,8 @@ import { useConfigStore } from '../config/store.ts'
 import { DashboardGrid } from '../grid/DashboardGrid.tsx'
 import { useEditMode } from '../grid/useEditMode.ts'
 import { AddWidgetButton } from '../grid/addWidgetFlow.tsx'
+import { BYOWDrawer } from '../widgets/byow/BYOWDrawer.tsx'
+import type { WidgetCode } from '../widgets/byow/template.ts'
 import { exportConfig, importConfigFromFile } from '../config/transports.ts'
 import { showToast } from '../components/toastStore.ts'
 import { ToastHost } from '../components/ToastHost.tsx'
@@ -14,11 +16,16 @@ import { decodeConfigFromUrl } from '../config/urlCodec.ts'
 import { backupRaw, safeGet, STORAGE_KEY } from '../config/storage.ts'
 import type { DashboardConfig } from '../config/types.ts'
 
+export type ByowTarget = { mode: 'create' } | { mode: 'edit'; id: string } | null
+
 export default function App() {
   const config = useConfigStore((s) => s.config)
   const importConfig = useConfigStore((s) => s.importConfig)
+  const addWidget = useConfigStore((s) => s.addWidget)
+  const updateWidget = useConfigStore((s) => s.updateWidget)
   const { editMode, toggle } = useEditMode()
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [byow, setByow] = useState<ByowTarget>(null)
   // Boot: decode ?config= once (CFG-04). Stored config untouched until the user saves (D-2.11).
   const [sharedConfig, setSharedConfig] = useState<DashboardConfig | null>(
     () => decodeConfigFromUrl(window.location.search),
@@ -57,6 +64,24 @@ export default function App() {
     [],
   )
 
+  const handleByowSave = useCallback(
+    (id: string | null, code: WidgetCode) => {
+      if (id == null) {
+        // Create: add a custom widget then write the code.
+        const newId = addWidget('custom')
+        if (newId.length > 0) {
+          updateWidget(newId, { ...code })
+          showToast('success', 'Custom widget added.')
+        }
+      } else {
+        updateWidget(id, { ...code })
+        showToast('success', 'Custom widget saved.')
+      }
+      setByow(null)
+    },
+    [addWidget, updateWidget],
+  )
+
   return (
     <>
       <header className={styles.header}>
@@ -89,7 +114,7 @@ export default function App() {
               e.target.value = ''
             }}
           />
-          {editMode && sharedConfig == null && <AddWidgetButton />}
+          {editMode && sharedConfig == null && <AddWidgetButton onAddCustom={() => setByow({ mode: 'create' })} />}
           <button
             type="button"
             className={styles.editToggle}
@@ -122,8 +147,16 @@ export default function App() {
             </div>
           </div>
         )}
-        <DashboardGrid editMode={editMode} configOverride={sharedConfig} />
+        <DashboardGrid editMode={editMode} configOverride={sharedConfig} onEditCustom={(id) => setByow({ mode: 'edit', id })} />
       </main>
+      {byow != null && sharedConfig == null && (
+        <BYOWDrawer
+          widget={byow.mode === 'edit' ? (config.widgets.find((w) => w.id === byow.id) ?? null) : null}
+          theme={{ accent: config.theme.accent }}
+          onSave={handleByowSave}
+          onClose={() => setByow(null)}
+        />
+      )}
       <ToastHost />
     </>
   )
