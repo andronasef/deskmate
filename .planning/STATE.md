@@ -2,17 +2,17 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 5
-status: completed
+status: Awaiting next milestone
 stopped_at: "Phase 1 complete (plans 01-01 + 01-02): scaffold + validated config core"
-last_updated: "2026-08-16T05:11:24.428Z"
+last_updated: "2026-08-16T05:13:34.368Z"
 last_activity: 2026-08-16
-last_activity_desc: Phase 5 complete
+last_activity_desc: Milestone v1.0 completed and archived
 progress:
   total_phases: 5
   completed_phases: 5
   total_plans: 13
   completed_plans: 13
+current_phase: 5
 current_phase_name: Kiosk & Polish
 ---
 
@@ -27,12 +27,10 @@ See: .planning/PROJECT.md (updated 2026-08-07)
 
 ## Current Position
 
-Phase: 5
-Plan: Not started
-Status: All phases complete
-Last activity: 2026-08-16 — Phase 5 complete
-
-Progress: [██████████] 100% (phase 1)
+Phase: Milestone v1.0 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-08-16 — Milestone v1.0 completed and archived
 
 ## Performance Metrics
 
@@ -99,10 +97,21 @@ Items acknowledged and carried forward from previous milestone close:
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| *(none)* | | | |
+| tech-debt | Layout item w/h bounds not schema-validated (grid owns semantics) | open | v1.0 close |
+| tech-debt | GitHub backoff is session-scoped (reload retries immediately) | open | v1.0 close |
+| tech-debt | srcdoc base-URL cookie-bearing request residual — future iframe `csp` attribute | open (accepted) | v1.0 close |
+| cosmetic | 50-widget cap uses disabled button + tooltip (vs toast) | open | v1.0 close |
+| cosmetic | Clock accent-seconds styling not implemented | open | v1.0 close |
+| verification | 24h on-hardware soak — run per 05-02-SOAK.md post-deploy | pending | v1.0 close |
+| verification | Deploy-host URL probe (re-run /probe-url-limit.html on production) | pending | v1.0 close |
+| verification | Chime on fresh profile + 2-widget rate-limit simulator (soak §3-4) | pending | v1.0 close |
 
 ## Session Continuity
 
 Last session: 2026-08-16T02:51:53.385Z
 Stopped at: Phase 1 complete (plans 01-01 + 01-02): scaffold + validated config core
 Resume file: .planning/phases/02-grid-persistence-transports/02-01-PLAN.md
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone
