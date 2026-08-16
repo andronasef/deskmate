@@ -27,11 +27,11 @@
   opacity: 0;
 }
 
-.grid[data-edit-mode='true'] :global(.react-resizable-handle) {
+.container[data-edit-mode='true'] .grid :global(.react-resizable-handle) {
   opacity: 1;
 }
 
-.grid[data-edit-mode='true'] :global(.react-resizable-handle:hover) {
+.container[data-edit-mode='true'] .grid :global(.react-resizable-handle:hover) {
   border-color: var(--accent);
 }
 
