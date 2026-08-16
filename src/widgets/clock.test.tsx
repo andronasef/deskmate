@@ -26,7 +26,7 @@ describe('ClockWidget (WID-01)', () => {
   it('renders the time and locale date', () => {
     renderClock({ hour12: true, showSeconds: false })
     expect(screen.getByTestId('clock-time')).toBeInTheDocument()
-    expect(screen.getByTestId('clock-date').textContent).toContain('August')
+    expect(screen.getByTestId('clock-date').textContent).toContain('Aug')
   })
 
   it('shows seconds when enabled and hides them by default', () => {

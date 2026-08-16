@@ -1,12 +1,17 @@
 :root {
-  --background: #0a0d12;
-  --surface: #141a22;
-  --surface-raised: #141a22;
-  --accent: #22d3ee;
-  --destructive: #f87171;
-  --text-primary: #e6eaf0;
-  --text-muted: #8a93a0;
-  --border: #232b36;
+  --background: #050505;
+  --surface: #080808;
+  --surface-raised: #0f0f0f;
+  --accent: #ffb000;
+  --destructive: #ff2a2d;
+  --text-primary: #ffb000;
+  --text-muted: #8a6b2f;
+  --border: #1a1408;
+
+  --led-amber: #ffb000;
+  --led-cyan: #00e5ff;
+  --led-green: #39ff14;
+  --led-red: #ff2a2d;
 
   --space-xs: 4px;
   --space-sm: 8px;
@@ -18,8 +23,8 @@
 
   color-scheme: dark;
   font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: grayscale;
 }
 
@@ -28,16 +33,58 @@
   margin: 0;
 }
 
-body {
-  font-family: 'Inter Variable', system-ui, sans-serif;
-  background: var(--background);
-  color: var(--text-primary);
-  line-height: 1.5;
+html,
+body,
+#root {
   min-height: 100svh;
 }
 
+body {
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: 18px;
+  line-height: 1.15;
+  background-color: var(--background);
+  color: var(--text-primary);
+  background-image: radial-gradient(circle at center, #111 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
 #root {
-  min-height: 100svh;
   display: flex;
   flex-direction: column;
+}
+
+/* LED glow utilities */
+.glow {
+  text-shadow: 0 0 2px currentColor, 0 0 8px currentColor, 0 0 16px currentColor;
+}
+
+.glowSoft {
+  text-shadow: 0 0 2px currentColor, 0 0 6px currentColor;
+}
+
+.glowBox {
+  box-shadow: 0 0 2px var(--accent), 0 0 8px var(--accent);
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.2;
+  }
+}
+
+.blink {
+  animation: blink 1s step-end infinite;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }

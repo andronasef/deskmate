@@ -1,18 +1,8 @@
 .container {
   width: 100%;
   min-height: 200px;
-  padding: var(--space-lg);
+  padding: var(--space-md);
   box-sizing: border-box;
-}
-
-/* RGL-positioned cell wrapper — RGL sets position/size inline; keep children filling. */
-.itemWrap {
-  box-sizing: border-box;
-}
-
-.itemInner {
-  width: 100%;
-  height: 100%;
 }
 
 .grid :global(.react-grid-item) {
@@ -22,15 +12,15 @@
 .grid :global(.react-grid-item.react-grid-placeholder) {
   background: var(--surface);
   opacity: 0.5;
-  border: 2px dashed var(--border);
-  border-radius: var(--space-sm);
+  border: 1px dashed var(--accent);
+  border-radius: 0;
 }
 
 .grid :global(.react-grid-item.react-draggable-dragging) {
   z-index: 30;
-  border-radius: var(--space-sm);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  border-color: var(--border);
+  border-radius: 0;
+  box-shadow: 0 0 8px var(--accent);
+  border-color: var(--accent);
 }
 
 .grid :global(.react-resizable-handle) {
@@ -45,23 +35,13 @@
   border-color: var(--accent);
 }
 
-.placeholderBody {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-xs);
-  color: var(--text-muted);
-  text-align: center;
+.itemWrap {
+  box-sizing: border-box;
 }
 
-.placeholderTitle {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.placeholderHint {
-  font-size: 14px;
+.itemInner {
+  width: 100%;
+  height: 100%;
 }
 
 .empty {
@@ -71,15 +51,16 @@
   justify-content: center;
   min-height: 240px;
   gap: var(--space-xs);
-  border: 2px dashed var(--border);
-  border-radius: var(--space-sm);
+  border: 1px dashed var(--border);
   color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .emptyTitle {
   font-size: 20px;
-  font-weight: 600;
-  color: var(--text-primary);
+  color: var(--accent);
+  text-shadow: 0 0 2px currentColor, 0 0 8px currentColor;
 }
 
 .emptyHint {
@@ -94,4 +75,5 @@
   height: 100%;
   color: var(--text-muted);
   font-size: 14px;
+  text-transform: uppercase;
 }

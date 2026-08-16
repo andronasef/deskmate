@@ -18,6 +18,8 @@ import { showToast } from '../components/toastStore.ts'
 import { ToastHost } from '../components/ToastHost.tsx'
 import { decodeConfigFromUrl } from '../config/urlCodec.ts'
 import { backupRaw, safeGet, STORAGE_KEY } from '../config/storage.ts'
+import { broadcastPresent } from '../present/presentChannel.ts'
+import PresentView from '../present/PresentView.tsx'
 import type { DashboardConfig } from '../config/types.ts'
 
 export type ByowTarget = { mode: 'create' } | { mode: 'edit'; id: string } | null
@@ -96,6 +98,21 @@ export default function App() {
     },
     [addWidget, updateWidget],
   )
+
+  // Broadcast config changes to any present popup windows so they stay in sync (CAST-03).
+  useEffect(() => {
+    return useConfigStore.subscribe((state, prevState) => {
+      if (state.config === prevState.config) return
+      // Popups consume broadcasts; don't echo back from them.
+      if (window.location.search.includes('present=')) return
+      broadcastPresent({ type: 'config-import', config: state.config })
+    })
+  }, [])
+
+  const presentWidgetId = new URLSearchParams(window.location.search).get('present')
+  if (presentWidgetId != null) {
+    return <PresentView />
+  }
 
   return (
     <>

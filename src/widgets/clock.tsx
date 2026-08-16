@@ -44,9 +44,11 @@ export function ClockWidget({ widget }: ClockWidgetProps) {
 
   const date = new Intl.DateTimeFormat(undefined, {
     weekday: 'long',
-    month: 'long',
+    month: 'short',
     day: 'numeric',
   }).format(now)
+
+  const timeParts = time.split(':')
 
   return (
     <div className={styles.root}>
@@ -55,7 +57,12 @@ export function ClockWidget({ widget }: ClockWidgetProps) {
         style={{ fontSize: FONT_SIZE_PX[fontSize] ?? 40 }}
         data-testid="clock-time"
       >
-        {time}
+        {timeParts.map((part, i) => (
+          <span key={i}>
+            {part}
+            {i < timeParts.length - 1 && <span className={styles.colon}>:</span>}
+          </span>
+        ))}
       </time>
       <div className={styles.date} data-testid="clock-date">
         {date}

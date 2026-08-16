@@ -1,0 +1,14 @@
+.root {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--background);
+  background-image: radial-gradient(circle at center, #111 1px, transparent 1px);
+  background-size: 4px 4px;
+  color: var(--text-muted);
+  font-size: 18px;
+  text-transform: uppercase;
+}
