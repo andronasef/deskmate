@@ -31,11 +31,11 @@
 
 ### BYOW Extensibility (BYOW)
 
-- [ ] **BYOW-01**: User can write a custom widget using HTML, CSS, and JavaScript in a built-in code editor
-- [ ] **BYOW-02**: User can preview a custom widget live as they edit its code
-- [ ] **BYOW-03**: Custom widgets render in a sandboxed iframe (`sandbox="allow-scripts"` only — never `allow-same-origin`) so they cannot access the host app
-- [ ] **BYOW-04**: Custom widgets receive a DeskMate API object (theme colors, screen size, config) via a validated postMessage bridge (source-reference + per-widget nonce)
-- [ ] **BYOW-05**: Custom widgets are torn down cleanly on removal/import — no zombie frames or timers
+- [x] **BYOW-01**: User can write a custom widget using HTML, CSS, and JavaScript in a built-in code editor
+- [x] **BYOW-02**: User can preview a custom widget live as they edit its code
+- [x] **BYOW-03**: Custom widgets render in a sandboxed iframe (`sandbox="allow-scripts"` only — never `allow-same-origin`) so they cannot access the host app
+- [x] **BYOW-04**: Custom widgets receive a DeskMate API object (theme colors, screen size, config) via a validated postMessage bridge (source-reference + per-widget nonce)
+- [x] **BYOW-05**: Custom widgets are torn down cleanly on removal/import — no zombie frames or timers
 
 ### Kiosk & Display (KIOSK)
 
@@ -95,11 +95,11 @@ Deferred to a future release. Tracked but not in the current roadmap.
 | WID-02 | Phase 3 | Complete |
 | WID-03 | Phase 3 | Complete |
 | WID-04 | Phase 3 | Complete |
-| BYOW-01 | Phase 4 | Pending |
-| BYOW-02 | Phase 4 | Pending |
-| BYOW-03 | Phase 4 | Pending |
-| BYOW-04 | Phase 4 | Pending |
-| BYOW-05 | Phase 4 | Pending |
+| BYOW-01 | Phase 4 | Complete |
+| BYOW-02 | Phase 4 | Complete |
+| BYOW-03 | Phase 4 | Complete |
+| BYOW-04 | Phase 4 | Complete |
+| BYOW-05 | Phase 4 | Complete |
 | KIOSK-01 | Phase 5 | Pending |
 | KIOSK-02 | Phase 5 | Pending |
 | KIOSK-03 | Phase 5 | Pending |

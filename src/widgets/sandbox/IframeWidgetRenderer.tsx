@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { READY_TIMEOUT_MS, SANDBOX_TOKENS, generateNonce } from './constants.ts'
 import { buildSrcdoc, type DeskMateApiPayload, type WidgetCode } from './bootstrap.ts'
 import { createSandboxBridge, type SandboxBridge } from './bridge.ts'
+import { reportWidgetFailure, reportWidgetRecovered } from '../../kiosk/statusStore.ts'
 import type { WidgetInstance } from '../../config/types.ts'
 import type { WidgetTheme } from '../theme.ts'
 import styles from './IframeWidgetRenderer.module.css'
@@ -68,13 +69,20 @@ export function IframeWidgetRenderer({ widget, theme, previewCode }: IframeWidge
 
     const bridge = createSandboxBridge(iframe, nonce, () => {
       setState('ready')
+      reportWidgetRecovered()
       pushApi()
     })
     bridge.attach()
     bridgeRef.current = bridge
 
     const timeout = setTimeout(() => {
-      setState((s) => (s === 'ready' ? s : 'crashed'))
+      setState((s) => {
+        if (s === 'ready') {
+          return s
+        }
+        reportWidgetFailure()
+        return 'crashed'
+      })
     }, READY_TIMEOUT_MS)
 
     let ro: ResizeObserver | null = null

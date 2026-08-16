@@ -4,6 +4,7 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 import { defaultConfig } from './defaultConfig.ts'
 import { validateConfig } from './schemas.ts'
 import { BACKUP_KEY, STORAGE_KEY, safeGet, safeRemove, safeSet } from './storage.ts'
+import type { WakeLockState } from '../kiosk/wakeLock.ts'
 import type { DashboardConfig, LayoutItem, LayoutMap } from './types.ts'
 
 export interface ConfigStore {
@@ -15,6 +16,11 @@ export interface ConfigStore {
   removeWidget: (id: string) => void
   setLayout: (layout: LayoutMap) => void
   updateWidget: (id: string, settings: Record<string, unknown>) => void
+  // Kiosk slice (D-5.02): UI state — NOT persisted.
+  wakeLock: WakeLockState
+  fullscreen: boolean
+  setWakeLock: (s: WakeLockState) => void
+  setFullscreen: (fs: boolean) => void
 }
 
 const stateStorage: StateStorage = {
@@ -85,6 +91,10 @@ export const useConfigStore = create<ConfigStore>()(
     (set, get) => ({
       config: defaultConfig(),
       hasHydrated: false,
+      wakeLock: 'inactive',
+      fullscreen: false,
+      setWakeLock: (s) => set({ wakeLock: s }),
+      setFullscreen: (fs) => set({ fullscreen: fs }),
       reset: () => set({ config: defaultConfig() }),
       importConfig: (raw: unknown) => set({ config: validateConfig(raw) }),
       addWidget: (type: string) => {

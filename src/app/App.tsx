@@ -1,5 +1,5 @@
-import { Download, Upload, X } from 'lucide-react'
-import { useCallback, useRef, useState } from 'react'
+import { Download, Gauge, Maximize, Upload, X } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import '../widgets/index.tsx' // registers native widgets into WIDGET_REGISTRY (D-3.01)
 import styles from './App.module.css'
 import bannerStyles from './SharedConfigBanner.module.css'
@@ -9,6 +9,10 @@ import { useEditMode } from '../grid/useEditMode.ts'
 import { AddWidgetButton } from '../grid/addWidgetFlow.tsx'
 import { BYOWDrawer } from '../widgets/byow/BYOWDrawer.tsx'
 import type { WidgetCode } from '../widgets/byow/template.ts'
+import { useKiosk } from '../kiosk/useKiosk.ts'
+import { SingleWidgetView } from '../kiosk/SingleWidgetView.tsx'
+import { StatusFooter } from '../kiosk/StatusFooter.tsx'
+import { SoakPanel } from '../kiosk/SoakPanel.tsx'
 import { exportConfig, importConfigFromFile } from '../config/transports.ts'
 import { showToast } from '../components/toastStore.ts'
 import { ToastHost } from '../components/ToastHost.tsx'
@@ -24,12 +28,23 @@ export default function App() {
   const addWidget = useConfigStore((s) => s.addWidget)
   const updateWidget = useConfigStore((s) => s.updateWidget)
   const { editMode, toggle } = useEditMode()
+  const { wakeLock, fullscreen, toggleFullscreen } = useKiosk()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [byow, setByow] = useState<ByowTarget>(null)
+  const [narrow, setNarrow] = useState(() => window.matchMedia('(max-width: 480px)').matches)
+  const [showDiagnostics, setShowDiagnostics] = useState(false)
   // Boot: decode ?config= once (CFG-04). Stored config untouched until the user saves (D-2.11).
   const [sharedConfig, setSharedConfig] = useState<DashboardConfig | null>(
     () => decodeConfigFromUrl(window.location.search),
   )
+
+  // Single-widget mobile view (GRID-05, D-5.05): follows the ≤480px breakpoint.
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 480px)')
+    const onChange = (e: MediaQueryListEvent) => setNarrow(e.matches)
+    mql.addEventListener('change', onChange)
+    return () => mql.removeEventListener('change', onChange)
+  }, [])
 
   const handleSaveShared = useCallback(() => {
     if (sharedConfig == null) {
@@ -114,6 +129,38 @@ export default function App() {
               e.target.value = ''
             }}
           />
+          <button
+            type="button"
+            className={styles.toolButton}
+            title={fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+            aria-label={fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+            data-active={fullscreen}
+            data-fullscreen-toggle
+            onClick={() => void toggleFullscreen()}
+          >
+            <Maximize size={16} />
+          </button>
+          <button
+            type="button"
+            className={styles.toolButton}
+            title="Kiosk diagnostics"
+            aria-label="Kiosk diagnostics"
+            data-active={showDiagnostics}
+            data-diagnostics-toggle
+            onClick={() => setShowDiagnostics((v) => !v)}
+          >
+            <Gauge size={16} />
+          </button>
+          {wakeLock === 'active' && (
+            <span className={styles.wakeChip} data-wake-lock-chip data-wake-state="active">
+              Screen awake
+            </span>
+          )}
+          {(wakeLock === 'unsupported' || wakeLock === 'error') && (
+            <span className={styles.wakeChip} data-wake-lock-chip data-wake-state="unavailable">
+              Screen awake unavailable
+            </span>
+          )}
           {editMode && sharedConfig == null && <AddWidgetButton onAddCustom={() => setByow({ mode: 'create' })} />}
           <button
             type="button"
@@ -147,8 +194,14 @@ export default function App() {
             </div>
           </div>
         )}
-        <DashboardGrid editMode={editMode} configOverride={sharedConfig} onEditCustom={(id) => setByow({ mode: 'edit', id })} />
+        {narrow && sharedConfig == null ? (
+          <SingleWidgetView widgets={config.widgets} theme={{ accent: config.theme.accent }} />
+        ) : (
+          <DashboardGrid editMode={editMode} configOverride={sharedConfig} onEditCustom={(id) => setByow({ mode: 'edit', id })} />
+        )}
       </main>
+      <StatusFooter />
+      {showDiagnostics && <SoakPanel />}
       {byow != null && sharedConfig == null && (
         <BYOWDrawer
           widget={byow.mode === 'edit' ? (config.widgets.find((w) => w.id === byow.id) ?? null) : null}

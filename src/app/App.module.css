@@ -75,6 +75,24 @@
   outline-offset: 2px;
 }
 
+.wakeChip {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 var(--space-sm);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.wakeChip[data-wake-state='active'] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
 .main {
   flex: 1;
   display: flex;

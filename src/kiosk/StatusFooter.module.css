@@ -1,0 +1,29 @@
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  height: 32px;
+  padding: 0 var(--space-md);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.chip[data-chip='failure'],
+.chip[data-chip='stale'] {
+  color: var(--destructive);
+}
+
+.chip[data-chip='awake'] {
+  color: var(--accent);
+}

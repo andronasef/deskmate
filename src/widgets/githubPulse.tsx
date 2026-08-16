@@ -1,7 +1,8 @@
 import { Flame, GitBranch, Star } from 'lucide-react'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { WidgetInstance } from '../config/types.ts'
 import { parseRepoRefs, useGitHubRepos, type GitHubRepoData } from './github.ts'
+import { reportGitHubState } from '../kiosk/statusStore.ts'
 import styles from './githubPulse.module.css'
 
 interface GitHubPulseWidgetProps {
@@ -44,6 +45,14 @@ export function GitHubPulseWidget({ widget }: GitHubPulseWidgetProps) {
   // so useGitHubRepos' effect doesn't abort/refetch on every render).
   const refs = useMemo(() => parseRepoRefs(widget.settings.repos), [widget.settings.repos])
   const repos = useGitHubRepos(refs)
+
+  // Aggregate GitHub health for the global status footer (KIOSK-04, D-5.11).
+  useEffect(() => {
+    const values = Object.values(repos)
+    const anyStale = values.some((d) => d?.stale === true)
+    const anyRateLimited = values.some((d) => d?.rateLimited === true)
+    reportGitHubState(anyStale, anyRateLimited)
+  }, [repos])
 
   const entries = Object.entries(repos)
   const anyRateLimited = entries.some(([, d]) => d?.rateLimited === true)

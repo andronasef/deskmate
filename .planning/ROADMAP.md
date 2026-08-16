@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Scaffold & Config Core** - Vite/React/TS scaffold plus the single validated `DashboardConfig` schema, store, and versioned storage adapter — the contract every later phase reuses (completed 2026-08-16)
 - [x] **Phase 2: Grid, Persistence & Config Transports** - Drag-and-drop grid, localStorage persistence, JSON export/import, and unique display URLs — the Core Value end-to-end (completed 2026-08-16)
 - [x] **Phase 3: Native Widgets** - Desk Clock & Date, Pomodoro Focus Timer, GitHub Pulse, plus the theme system and graceful live-data failure (completed 2026-08-16)
-- [ ] **Phase 4: Sandbox & BYOW** - Sandboxed iframe renderer, validated postMessage bridge, and the in-browser custom widget editor — the open ecosystem
+- [x] **Phase 4: Sandbox & BYOW** - Sandboxed iframe renderer, validated postMessage bridge, and the in-browser custom widget editor — the open ecosystem (completed 2026-08-16)
 - [ ] **Phase 5: Kiosk & Polish** - Fullscreen + wake lock, single-widget mobile view, status indicators, PWA installability, and on-hardware soak
 
 ## Phase Details
@@ -101,9 +101,9 @@ Plans:
 
 Plans:
 
-- [ ] 04-01: Research spike — multi-browser postMessage + srcdoc behavior (opaque origins, nonce handshake, `targetOrigin "*"` semantics across Chrome/Safari/Firefox) before implementing the bridge
-- [ ] 04-02: Sandbox contract + bridge + bootstrap + IframeWidgetRenderer (`allow-scripts` constant + exact-attribute unit test, srcdoc escaping, hostile escape-attempt test widget) + widget lifecycle (ready handshake with timeout, crash fallback, explicit teardown)
-- [ ] 04-03: BYOW editor (CodeMirror, live preview) + iframe performance budgets (≤8 mobile / ≤20 desktop) + lazy mounting
+- [x] 04-01: Research spike — multi-browser postMessage + srcdoc behavior (opaque origins, nonce handshake, `targetOrigin "*"` semantics across Chrome/Safari/Firefox) before implementing the bridge
+- [x] 04-02: Sandbox contract + bridge + bootstrap + IframeWidgetRenderer (`allow-scripts` constant + exact-attribute unit test, srcdoc escaping, hostile escape-attempt test widget) + widget lifecycle (ready handshake with timeout, crash fallback, explicit teardown)
+- [x] 04-03: BYOW editor (CodeMirror, live preview) + iframe performance budgets (≤8 mobile / ≤20 desktop) + lazy mounting
 
 ### Phase 5: Kiosk & Polish
 
@@ -136,7 +136,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Scaffold & Config Core | 2/2 | Complete    | 2026-08-16 |
 | 2. Grid, Persistence & Transports | 3/3 | Complete    | 2026-08-16 |
 | 3. Native Widgets | 3/3 | Complete    | 2026-08-16 |
-| 4. Sandbox & BYOW | 0/3 | Not started | - |
+| 4. Sandbox & BYOW | 3/3 | Complete    | 2026-08-16 |
 | 5. Kiosk & Polish | 0/2 | Not started | - |
 
 *Plan counts are initial estimates (granularity: coarse, 1-3 plans per phase); refined during plan-phase.*
