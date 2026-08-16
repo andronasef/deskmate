@@ -1,6 +1,9 @@
 import styles from './App.module.css'
+import { useConfigStore } from '../config/store.ts'
 
 export default function App() {
+  useConfigStore((s) => s.config)
+
   return (
     <>
       <header className={styles.header}>
