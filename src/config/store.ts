@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { StateStorage } from 'zustand/middleware'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import { defaultConfig } from './defaultConfig.ts'
+import { defaultConfig, GRID_COLS } from './defaultConfig.ts'
 import { validateConfig } from './schemas.ts'
 import { BACKUP_KEY, STORAGE_KEY, safeGet, safeRemove, safeSet } from './storage.ts'
 import type { WakeLockState } from '../kiosk/wakeLock.ts'
@@ -86,6 +86,31 @@ function firstFreeSlot(layout: LayoutItem[]): { x: number; y: number } {
   }
 }
 
+/**
+ * Place a new widget on EVERY breakpoint. A breakpoint with no entry for an item
+ * makes RGL fall back to a 1x1 cell at the origin, which reads as a broken grid
+ * on any viewport the widget wasn't added from.
+ */
+function placeOnAllBreakpoints(layout: LayoutMap, id: string): LayoutMap {
+  const next: LayoutMap = {}
+  for (const bp of Object.keys(GRID_COLS)) {
+    const items = layout[bp] ?? []
+    const cols = GRID_COLS[bp]
+    // Narrow breakpoints stack full-width; lg/md keep the 4-col card size.
+    const w = Math.min(4, cols)
+    const y = items.reduce((max, li) => Math.max(max, li.y + li.h), 0)
+    const x = bp === 'lg' ? firstFreeSlot(items).x : 0
+    next[bp] = [...items, { i: id, x: Math.min(x, cols - w), y, w, h: 2 }]
+  }
+  // Preserve any breakpoint keys not in GRID_COLS rather than dropping them.
+  for (const [bp, items] of Object.entries(layout)) {
+    if (next[bp] == null) {
+      next[bp] = items
+    }
+  }
+  return next
+}
+
 export const useConfigStore = create<ConfigStore>()(
   persist(
     (set, get) => ({
@@ -104,11 +129,7 @@ export const useConfigStore = create<ConfigStore>()(
         }
         const id = `w-${type}-${crypto.randomUUID().slice(0, 8)}`
         const widget = { id, type, settings: {} }
-        const { x, y } = firstFreeSlot(config.layout.lg ?? [])
-        const layout: LayoutMap = {
-          ...config.layout,
-          lg: [...(config.layout.lg ?? []), { i: id, x, y, w: 4, h: 2 }],
-        }
+        const layout = placeOnAllBreakpoints(config.layout, id)
         set({ config: { ...config, widgets: [...config.widgets, widget], layout } })
         return id
       },

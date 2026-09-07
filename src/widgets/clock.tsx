@@ -9,9 +9,9 @@ interface ClockWidgetProps {
 }
 
 const FONT_SIZE_PX: Record<string, number> = {
-  small: 28,
-  medium: 40,
-  large: 56,
+  small: 30,
+  medium: 48,
+  large: 60,
 }
 
 function secondsToTick(showSeconds: boolean): number {
@@ -53,7 +53,7 @@ export function ClockWidget({ widget }: ClockWidgetProps) {
   return (
     <div className={styles.root}>
       <time
-        className={styles.time}
+        className={`glow ${styles.time}`}
         style={{ fontSize: FONT_SIZE_PX[fontSize] ?? 40 }}
         data-testid="clock-time"
       >
@@ -64,7 +64,7 @@ export function ClockWidget({ widget }: ClockWidgetProps) {
           </span>
         ))}
       </time>
-      <div className={styles.date} data-testid="clock-date">
+      <div className={`glow ${styles.date}`} data-testid="clock-date">
         {date}
       </div>
     </div>

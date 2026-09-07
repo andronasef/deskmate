@@ -62,7 +62,7 @@ describe('sanitizeConfig', () => {
   it('mends malformed shapes so validateConfig either passes or fails cleanly (never throws)', () => {
     expect(() => validateConfig(sanitizeConfig({}))).not.toThrow()
     const mended = sanitizeConfig({ version: 'x', layout: 'garbage', widgets: 'nope', theme: null })
-    expect(mended).toMatchObject({ version: 1, layout: {}, widgets: [], theme: { accent: '#22D3EE' } })
+    expect(mended).toMatchObject({ version: 1, layout: {}, widgets: [], theme: { accent: '#ff8c1a' } })
   })
 
   it('passes a valid config through unchanged in shape', () => {

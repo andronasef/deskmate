@@ -19,7 +19,7 @@
   padding: var(--space-md);
   background: var(--surface-raised);
   border: 1px solid var(--border);
-  border-radius: var(--space-sm);
+  border-radius: 0;
   color: var(--text-primary);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }

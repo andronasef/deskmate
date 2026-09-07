@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import type { WidgetInstance } from '../config/types.ts'
 import type { SettingsField, WidgetDefinition } from '../widgets/registry.tsx'
 import styles from './SettingsPopover.module.css'
@@ -8,10 +9,12 @@ interface SettingsPopoverProps {
   definition: WidgetDefinition
   onSave: (id: string, settings: Record<string, unknown>) => void
   onClose: () => void
+  /** Rect of the widget cell; the popover is portaled to <body> (outside the LED mask) and pinned to it. */
+  anchor: DOMRect | null
 }
 
 /** Generic per-widget settings popover (D-3.03): fields from the registry definition. */
-export function SettingsPopover({ widget, definition, onSave, onClose }: SettingsPopoverProps) {
+export function SettingsPopover({ widget, definition, onSave, onClose, anchor }: SettingsPopoverProps) {
   const [values, setValues] = useState<Record<string, unknown>>(() => ({
     ...definition.defaultSettings,
     ...widget.settings,
@@ -37,6 +40,17 @@ export function SettingsPopover({ widget, definition, onSave, onClose }: Setting
     }
   }, [onClose])
 
+  // Flip above the anchor when opening downward would run past the viewport.
+  const [top, setTop] = useState<number | null>(null)
+  useLayoutEffect(() => {
+    if (anchor == null) {
+      return
+    }
+    const h = rootRef.current?.offsetHeight ?? 0
+    const below = anchor.bottom + 6
+    setTop(below + h + 8 > window.innerHeight ? Math.max(8, anchor.top - h - 6) : below)
+  }, [anchor])
+
   const setValue = (key: string, value: unknown) => setValues((v) => ({ ...v, [key]: value }))
 
   const handleSave = () => {
@@ -56,8 +70,24 @@ export function SettingsPopover({ widget, definition, onSave, onClose }: Setting
     onClose()
   }
 
-  return (
-    <div className={styles.popover} ref={rootRef} data-settings-popover onClick={(e) => e.stopPropagation()}>
+  return createPortal(
+    <div
+      className={styles.popover}
+      ref={rootRef}
+      data-settings-popover
+      onClick={(e) => e.stopPropagation()}
+      style={
+        anchor != null
+          ? {
+              top: top ?? anchor.bottom + 6,
+              left: Math.max(8, Math.min(anchor.right - 260, window.innerWidth - 268)),
+              // Avoid a first-paint flash at the pre-measurement position.
+              visibility: top == null ? 'hidden' : undefined,
+            }
+          : // No anchor (mobile single-widget view): center it.
+            { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }
+      }
+    >
       <div className={styles.title}>Settings</div>
       <div className={styles.fields}>
         {definition.settingsFields.map((field) => (
@@ -72,7 +102,8 @@ export function SettingsPopover({ widget, definition, onSave, onClose }: Setting
           Save
         </button>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
 

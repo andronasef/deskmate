@@ -1,4 +1,4 @@
-import { Download, Gauge, Maximize, Upload, X } from 'lucide-react'
+import { Gauge, Maximize, X } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import '../widgets/index.tsx' // registers native widgets into WIDGET_REGISTRY (D-3.01)
 import styles from './App.module.css'
@@ -7,6 +7,7 @@ import { useConfigStore } from '../config/store.ts'
 import { DashboardGrid } from '../grid/DashboardGrid.tsx'
 import { useEditMode } from '../grid/useEditMode.ts'
 import { AddWidgetButton } from '../grid/addWidgetFlow.tsx'
+import { HeaderMenu } from './HeaderMenu.tsx'
 import { BYOWDrawer } from '../widgets/byow/BYOWDrawer.tsx'
 import type { WidgetCode } from '../widgets/byow/template.ts'
 import { useKiosk } from '../kiosk/useKiosk.ts'
@@ -116,22 +117,9 @@ export default function App() {
 
   return (
     <>
-      <header className={styles.header}>
-        <span className={styles.wordmark}>DeskMate</span>
+      <header className={`matrix ${styles.header}`}>
+        <span className={`glow ${styles.wordmark}`}>DeskMate</span>
         <div className={styles.toolbar}>
-          <button type="button" className={styles.toolButton} title="Export config" onClick={handleExport}>
-            <Download size={16} />
-            Export
-          </button>
-          <button
-            type="button"
-            className={styles.toolButton}
-            title="Import config"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            <Upload size={16} />
-            Import
-          </button>
           <input
             ref={fileInputRef}
             type="file"
@@ -179,6 +167,7 @@ export default function App() {
             </span>
           )}
           {editMode && sharedConfig == null && <AddWidgetButton onAddCustom={() => setByow({ mode: 'create' })} />}
+          <HeaderMenu onExport={handleExport} onImportClick={() => fileInputRef.current?.click()} />
           <button
             type="button"
             className={styles.editToggle}
@@ -212,7 +201,11 @@ export default function App() {
           </div>
         )}
         {narrow && sharedConfig == null ? (
-          <SingleWidgetView widgets={config.widgets} theme={{ accent: config.theme.accent }} />
+          <SingleWidgetView
+            widgets={config.widgets}
+            theme={{ accent: config.theme.accent }}
+            onEditCustom={(id) => setByow({ mode: 'edit', id })}
+          />
         ) : (
           <DashboardGrid editMode={editMode} configOverride={sharedConfig} onEditCustom={(id) => setByow({ mode: 'edit', id })} />
         )}

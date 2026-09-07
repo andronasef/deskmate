@@ -10,7 +10,7 @@ describe('defaultConfig', () => {
 
     expect(a.version).toBe(1)
     expect(a.theme.accent).toBe(DEFAULT_THEME_ACCENT)
-    expect(DEFAULT_THEME_ACCENT).toBe('#22D3EE')
+    expect(DEFAULT_THEME_ACCENT).toBe('#ff8c1a')
 
     // Per-breakpoint seeded layout (D-2.07): every breakpoint present, every widget placed.
     const bps = Object.keys(a.layout)

@@ -1,11 +1,14 @@
+/* Portaled to <body>; positioned from viewport-space rects, so `fixed`. */
 .popover {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 6px;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 260px;
+  max-height: calc(100vh - 16px);
+  overflow-y: auto;
   background: var(--surface-raised);
   border: 1px solid var(--border);
-  border-radius: var(--space-sm);
+  border-radius: 0;
   padding: var(--space-md);
   z-index: 50;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
@@ -45,7 +48,7 @@
   width: 130px;
   padding: 4px 6px;
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 0;
   background: var(--surface);
   color: var(--text-primary);
   font-family: inherit;
@@ -75,7 +78,7 @@
 .save {
   height: 32px;
   padding: 0 var(--space-sm);
-  border-radius: var(--space-sm);
+  border-radius: 0;
   font-size: 14px;
   font-family: inherit;
   cursor: pointer;

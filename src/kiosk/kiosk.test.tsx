@@ -63,14 +63,17 @@ describe('SingleWidgetView (GRID-05)', () => {
     { id: 'c', type: 'test-widget', settings: {} },
   ]
 
+  const renderSingle = (items: WidgetInstance[] = widgets) =>
+    render(<SingleWidgetView widgets={items} theme={{ accent: '#22D3EE' }} />)
+
   it('renders the first widget full-screen with dots and arrows', () => {
-    render(<SingleWidgetView widgets={widgets} theme={{ accent: '#22D3EE' }} />)
+    renderSingle()
     expect(screen.getByTestId('body-a')).toBeInTheDocument()
     expect(screen.getAllByRole('button').length).toBeGreaterThanOrEqual(2) // arrows
   })
 
   it('arrows cycle through widgets and wrap around', () => {
-    render(<SingleWidgetView widgets={widgets} theme={{ accent: '#22D3EE' }} />)
+    renderSingle()
     act(() => fireEvent.click(screen.getByLabelText('Next widget')))
     expect(screen.getByTestId('body-b')).toBeInTheDocument()
     act(() => fireEvent.click(screen.getByLabelText('Next widget')))
@@ -82,7 +85,7 @@ describe('SingleWidgetView (GRID-05)', () => {
   })
 
   it('renders nothing when there are no widgets', () => {
-    const { container } = render(<SingleWidgetView widgets={[]} theme={{ accent: '#22D3EE' }} />)
+    const { container } = renderSingle([])
     expect(container.firstChild).toBeNull()
   })
 })

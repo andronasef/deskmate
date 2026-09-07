@@ -22,14 +22,14 @@ export default function PresentView({ search = window.location.search }: { searc
 
   if (widget == null) {
     return (
-      <div className={styles.root} data-present-error>
+      <div className={`matrix ${styles.root}`} data-present-error>
         <span>Widget not found</span>
       </div>
     )
   }
 
   return (
-    <div className={styles.root} data-present-view>
+    <div className={`matrix ${styles.root}`} data-present-view>
       {renderWidget(widget, { accent: config.theme.accent }, false)}
     </div>
   )

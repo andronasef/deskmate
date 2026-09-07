@@ -1,5 +1,5 @@
 import { Responsive, useContainerWidth, type Layout, type ResponsiveLayouts } from 'react-grid-layout'
-import { forwardRef, useEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useConfigStore } from '../config/store.ts'
 import { GRID_BREAKPOINTS, GRID_COLS } from '../config/defaultConfig.ts'
 import { WidgetFrame } from './WidgetFrame.tsx'
@@ -19,6 +19,44 @@ interface DashboardGridProps {
   onEditCustom?: (id: string) => void
 }
 
+const GRID_MARGIN_Y = 16
+const MIN_ROW_HEIGHT = 60
+
+/** Largest breakpoint whose min-width the container satisfies — mirrors RGL's own resolution. */
+function resolveBreakpoint(width: number, breakpoints: Record<string, number>): string {
+  const sorted = Object.entries(breakpoints).sort((a, b) => b[1] - a[1])
+  return sorted.find(([, minWidth]) => width >= minWidth)?.[0] ?? sorted[sorted.length - 1][0]
+}
+
+/**
+ * Tracks the available content height for the grid (excluding the container's own
+ * padding). Measures the container's PARENT, not the container itself — the
+ * container's height grows with its own content (it isn't min-height: 0), so
+ * measuring it directly would feed back into rowHeight: bigger rowHeight → taller
+ * content → bigger measured height → bigger rowHeight again. The parent (`.main`)
+ * is sized by the page shell independent of the grid's content, so it's stable.
+ */
+function useContainerHeight(containerRef: React.RefObject<HTMLDivElement | null>) {
+  const [height, setHeight] = useState(0)
+  useEffect(() => {
+    const container = containerRef.current
+    const parent = container?.parentElement
+    if (container == null || parent == null) {
+      return
+    }
+    const measure = () => {
+      const cs = getComputedStyle(container)
+      const paddingY = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom)
+      setHeight(Math.max(0, parent.clientHeight - paddingY))
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(parent)
+    return () => observer.disconnect()
+  }, [containerRef])
+  return height
+}
+
 /**
  * Responsive multi-widget grid (GRID-01…06) bound to the config store.
  * RGL v2 hooks: useContainerWidth (mounted-gated, D-2.08) + Responsive.
@@ -30,6 +68,7 @@ export function DashboardGrid({ editMode, configOverride, onEditCustom }: Dashbo
   const removeWidget = useConfigStore((s) => s.removeWidget)
   const updateWidget = useConfigStore((s) => s.updateWidget)
   const { width, containerRef, mounted } = useContainerWidth()
+  const containerHeight = useContainerHeight(containerRef)
   const [openSettingsId, setOpenSettingsId] = useState<string | null>(null)
 
   const config = configOverride ?? storeConfig
@@ -47,6 +86,16 @@ export function DashboardGrid({ editMode, configOverride, onEditCustom }: Dashbo
   const widgets = config.widgets
   const layouts = config.layout
   const theme = { accent: config.theme.accent }
+
+  // Fill (or shrink to fit) the available container height instead of a fixed
+  // rowHeight — otherwise short layouts leave a dead black gap below the grid,
+  // and tall ones overflow past the window and force a page scrollbar.
+  const breakpoint = resolveBreakpoint(width, GRID_BREAKPOINTS)
+  const rowsUsed = Math.max(1, ...(layouts[breakpoint] ?? []).map((it) => it.y + it.h))
+  const rowHeight =
+    containerHeight > 0
+      ? Math.max(MIN_ROW_HEIGHT, Math.floor((containerHeight - GRID_MARGIN_Y * (rowsUsed - 1)) / rowsUsed))
+      : MIN_ROW_HEIGHT
 
   const handleLayoutChange = (_layout: Layout, newLayouts: ResponsiveLayouts) => {
     const serialized = JSON.stringify(newLayouts)
@@ -78,17 +127,17 @@ export function DashboardGrid({ editMode, configOverride, onEditCustom }: Dashbo
   }
 
   return (
-    <div ref={containerRef} className={styles.container} data-edit-mode={interactive}>
+    <div ref={containerRef} className={`matrix ${styles.container}`} data-edit-mode={interactive}>
       {mounted && (
         <Responsive
           width={width}
           layouts={layouts}
           breakpoints={GRID_BREAKPOINTS}
           cols={GRID_COLS}
-          rowHeight={80}
-          margin={[16, 16]}
+          rowHeight={rowHeight}
+          margin={[16, GRID_MARGIN_Y]}
           dragConfig={{ enabled: interactive }}
-          resizeConfig={{ enabled: interactive }}
+          resizeConfig={{ enabled: interactive, handles: ['se'] }}
           onLayoutChange={handleLayoutChange}
           className={styles.grid}
         >
@@ -98,6 +147,7 @@ export function DashboardGrid({ editMode, configOverride, onEditCustom }: Dashbo
               widget={widget}
               theme={theme}
               interactive={interactive}
+              readOnly={configOverride != null}
               onRemove={removeWidget}
               openSettings={openSettings}
               onSettingsSave={handleSettingsSave}
@@ -126,10 +176,15 @@ export function DashboardGrid({ editMode, configOverride, onEditCustom }: Dashbo
 // Re-export for type consumers.
 export type { LayoutItem, WidgetInstance }
 
-interface GridItemBodyProps extends Pick<React.HTMLAttributes<HTMLDivElement>, 'className' | 'style'> {
+interface GridItemBodyProps
+  extends Pick<
+    React.HTMLAttributes<HTMLDivElement>,
+    'className' | 'style' | 'children' | 'onMouseDown' | 'onMouseUp' | 'onTouchEnd'
+  > {
   widget: WidgetInstance
   theme: { accent: string }
   interactive: boolean
+  readOnly: boolean
   onRemove: (id: string) => void
   openSettings: (widget: WidgetInstance) => void
   onSettingsSave: (id: string, settings: Record<string, unknown>) => void
@@ -138,24 +193,43 @@ interface GridItemBodyProps extends Pick<React.HTMLAttributes<HTMLDivElement>, '
 }
 
 /** One grid cell: lazy-mounts custom-widget iframes until near-visible (D-4.14).
- *  Forwards RGL's cloned positioning props (className/style/ref) — GridItem clones
- *  its direct child and expects them to reach a DOM node. */
+ *  RGL clones its direct child and requires it to forward ref/className/style/
+ *  onMouseDown/onMouseUp/onTouchEnd AND render `children` — that's how the
+ *  resize-handle spans and drag listeners reach the DOM (see RGL quick-start:
+ *  "Grid children must forward refs and certain props ... children"). Dropping
+ *  `children` silently ate the resize handles — no drag/resize handle rendered. */
 const GridItemBody = forwardRef<HTMLDivElement, GridItemBodyProps>(function GridItemBody(props, rglRef) {
-  const { widget, theme, interactive, onRemove, openSettings, onSettingsSave, openSettingsId, setOpenSettingsId } = props
+  const { widget, theme, interactive, readOnly, onRemove, openSettings, onSettingsSave, openSettingsId, setOpenSettingsId } =
+    props
   const wrapRef = useRef<HTMLDivElement>(null)
   const near = useLazyMount(wrapRef)
   const isCustom = widget.type === 'custom'
   const definition = WIDGET_REGISTRY[widget.type]
+  const isSettingsOpen = openSettingsId === widget.id
+  const [anchor, setAnchor] = useState<DOMRect | null>(null)
+
+  useLayoutEffect(() => {
+    if (isSettingsOpen) {
+      setAnchor(wrapRef.current?.getBoundingClientRect() ?? null)
+    }
+  }, [isSettingsOpen])
 
   return (
-    <div ref={rglRef} className={props.className ? `${props.className} ${styles.itemWrap}` : styles.itemWrap} style={props.style}>
+    <div
+      ref={rglRef}
+      className={props.className ? `${props.className} ${styles.itemWrap}` : styles.itemWrap}
+      style={props.style}
+      onMouseDown={props.onMouseDown}
+      onMouseUp={props.onMouseUp}
+      onTouchEnd={props.onTouchEnd}
+    >
       <div ref={wrapRef} className={styles.itemInner}>
         <WidgetFrame
         widget={widget}
         theme={theme}
         editMode={interactive}
         onRemove={onRemove}
-        onSettings={interactive ? openSettings : undefined}
+        onSettings={readOnly ? undefined : openSettings}
       >
         {isCustom && !near ? (
           <div className={styles.lazyPlaceholder} data-lazy-mount>
@@ -165,15 +239,17 @@ const GridItemBody = forwardRef<HTMLDivElement, GridItemBodyProps>(function Grid
           renderWidget(widget, theme, interactive)
         )}
       </WidgetFrame>
-      {openSettingsId === widget.id && definition != null && (
+      {isSettingsOpen && definition != null && (
         <SettingsPopover
           widget={widget}
           definition={definition}
+          anchor={anchor}
           onSave={onSettingsSave}
           onClose={() => setOpenSettingsId(null)}
         />
       )}
       </div>
+      {props.children}
     </div>
   )
 })

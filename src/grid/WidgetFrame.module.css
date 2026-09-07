@@ -1,16 +1,27 @@
+/* Each widget is its own LED module: a tinted dot field inside a black bezel,
+   like a discrete panel on a Tidbyt shelf. Tint via --panel-bg/--panel-dot. */
 .frame {
   position: relative;
   width: 100%;
   height: 100%;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 0;
+  background-color: var(--panel-bg);
+  background-image: radial-gradient(circle, var(--panel-dot) var(--dot-r), transparent var(--dot-gap));
+  background-size: var(--led) var(--led);
+  border: 3px solid #000;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px #141414, 0 1px 0 #000;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.9);
 }
+
+.frame[data-edit-mode='true'] {
+  cursor: move;
+}
+
+/* Per-type tints are global (keyed on data-widget-type in index.css) so the
+   mobile single-widget stage renders the same panel as this grid cell. */
 
 .body {
   width: 100%;
@@ -22,64 +33,53 @@
   box-sizing: border-box;
 }
 
-.settings,
-.present,
-.remove {
+/* Flex row (not independently-offset absolute buttons) so the cluster always
+   hugs the top-right corner — with only settings+present rendered (normal
+   mode) there's no leftover gap where remove would've sat. */
+.toolbar {
   position: absolute;
   top: 6px;
-  width: 28px;
-  height: 28px;
+  right: 6px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--border);
-  border-radius: 0;
-  background: var(--surface-raised);
-  color: var(--text-muted);
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity 120ms ease, color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+  gap: 3px;
   z-index: 10;
 }
 
-.settings {
-  right: 70px;
-}
-
-.present {
-  right: 38px;
-}
-
+.settings,
+.present,
 .remove {
-  right: 6px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: #0d0d0d;
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 120ms ease, color 120ms ease;
 }
 
 .frame:hover .settings,
 .frame:hover .present,
-.frame:hover .remove,
-.frame[data-edit-mode='true'] .settings,
-.frame[data-edit-mode='true'] .present,
-.frame[data-edit-mode='true'] .remove {
+.frame:hover .remove {
   opacity: 1;
 }
 
 .settings:hover,
 .present:hover {
   color: var(--accent);
-  border-color: var(--accent);
-  box-shadow: 0 0 2px var(--accent), 0 0 6px var(--accent);
 }
 
 .present:hover {
-  color: var(--led-cyan);
-  border-color: var(--led-cyan);
-  box-shadow: 0 0 2px var(--led-cyan), 0 0 6px var(--led-cyan);
+  color: var(--yellow);
 }
 
 .remove:hover {
   color: var(--destructive);
-  border-color: var(--destructive);
-  box-shadow: 0 0 2px var(--destructive), 0 0 6px var(--destructive);
 }
 
 .settings:focus-visible,

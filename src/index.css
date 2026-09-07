@@ -1,17 +1,28 @@
 :root {
-  --background: #050505;
-  --surface: #080808;
-  --surface-raised: #0f0f0f;
-  --accent: #ffb000;
-  --destructive: #ff2a2d;
-  --text-primary: #ffb000;
-  --text-muted: #8a6b2f;
-  --border: #1a1408;
+  /* LED matrix geometry — one "pixel" pitch for the whole app. */
+  --led: 9px;
+  --dot-r: 30%;
+  --dot-gap: 62%;
 
-  --led-amber: #ffb000;
-  --led-cyan: #00e5ff;
-  --led-green: #39ff14;
-  --led-red: #ff2a2d;
+  /* Tidbyt palette: black bezel, dim off-LEDs, warm lit colors. */
+  --background: #000000;
+  --surface: #000000;
+  --surface-raised: #0d0d0d;
+  --off-dot: #171717;
+
+  --accent: #ff8c1a; /* lit orange */
+  --cream: #fff8e7; /* lit white */
+  --yellow: #ffc52f; /* lit gold */
+  --blue-panel: #2c4a8c; /* dim lit blue panel */
+  --destructive: #ff3b30;
+
+  /* Per-panel LED field: bg is the substrate, dot is the unlit diode. */
+  --panel-bg: #070707;
+  --panel-dot: #232323;
+
+  --text-primary: #fff8e7;
+  --text-muted: #b3a382;
+  --border: #262626;
 
   --space-xs: 4px;
   --space-sm: 8px;
@@ -24,8 +35,6 @@
   color-scheme: dark;
   font-synthesis: none;
   text-rendering: geometricPrecision;
-  -webkit-font-smoothing: none;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
@@ -33,20 +42,23 @@
   margin: 0;
 }
 
+/* A definite height (not just min-height) so #root's flex column has real
+   cross-size for `.main { flex: 1 }` to fill — otherwise the column's height
+   is just the sum of its children's content, and flex-grow has nothing to
+   distribute (GRID-05/06: the dashboard should fill the viewport, not float
+   in a taller page). */
 html,
 body,
 #root {
-  min-height: 100svh;
+  height: 100svh;
 }
 
 body {
   font-family: 'VT323', 'Courier New', monospace;
   font-size: 18px;
   line-height: 1.15;
-  background-color: var(--background);
+  background: var(--background);
   color: var(--text-primary);
-  background-image: radial-gradient(circle at center, #111 1px, transparent 1px);
-  background-size: 4px 4px;
 }
 
 #root {
@@ -54,17 +66,51 @@ body {
   flex-direction: column;
 }
 
-/* LED glow utilities */
+/*
+ * The LED panel primitive: paints the unlit dot grid behind content — the
+ * ambient bezel texture, like the dark dots surrounding lit pixels on a real
+ * Tidbyt. Content on top stays crisp; only text/icons meant to read as
+ * literal glowing LEDs should add `.glow` (see below).
+ */
+.matrix {
+  background-color: #000;
+  background-image: radial-gradient(circle, var(--off-dot) var(--dot-r), transparent var(--dot-gap));
+  background-size: var(--led) var(--led);
+  background-position: 0 0;
+  background-origin: border-box;
+}
+
+/* Lit-LED bloom: soft colored glow using the element's own text color. */
 .glow {
-  text-shadow: 0 0 2px currentColor, 0 0 8px currentColor, 0 0 16px currentColor;
+  text-shadow: 0 0 2px currentColor, 0 0 8px currentColor;
 }
 
-.glowSoft {
-  text-shadow: 0 0 2px currentColor, 0 0 6px currentColor;
+/* A tintable LED field. Override --panel-bg/--panel-dot to color a panel. */
+.panel {
+  background-color: var(--panel-bg);
+  background-image: radial-gradient(circle, var(--panel-dot) var(--dot-r), transparent var(--dot-gap));
+  background-size: var(--led) var(--led);
 }
 
-.glowBox {
-  box-shadow: 0 0 2px var(--accent), 0 0 8px var(--accent);
+/*
+ * Per-type panel tints, global so a widget looks the same in a desktop grid
+ * cell and on the mobile single-widget stage. The tint is a faint hue in the
+ * *unlit* diodes only — the panel stays near-black and lit content carries the
+ * color, as on the real device.
+ */
+[data-widget-type='clock'] {
+  --panel-bg: #05070d;
+  --panel-dot: #1b2540;
+}
+
+[data-widget-type='pomodoro'] {
+  --panel-bg: #0b0705;
+  --panel-dot: #2e2013;
+}
+
+[data-widget-type='github-pulse'] {
+  --panel-bg: #050907;
+  --panel-dot: #16261f;
 }
 
 @keyframes blink {
@@ -74,7 +120,7 @@ body {
   }
   50%,
   100% {
-    opacity: 0.2;
+    opacity: 0.15;
   }
 }
 

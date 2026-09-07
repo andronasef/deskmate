@@ -12,7 +12,7 @@ export function StatusFooter() {
   const wakeLock = useWakeLockState()
 
   return (
-    <footer className={styles.footer} data-status-footer>
+    <footer className={`matrix ${styles.footer}`} data-status-footer>
       {status.widgetFailures > 0 && (
         <span className={styles.chip} data-chip="failure" data-testid="chip-failures">
           <TriangleAlert size={12} />

@@ -27,32 +27,32 @@ export function WidgetFrame({ widget, theme, editMode, onRemove, onSettings, chi
       style={{ '--widget-accent': widgetAccent(theme) } as React.CSSProperties}
     >
       <div className={styles.body}>{children}</div>
-      <button
-        type="button"
-        className={styles.present}
-        title="Present on another screen"
-        aria-label={`Present ${widgetName(widget)} on another screen`}
-        onClick={() => {
-          const url = new URL(window.location.href)
-          url.search = new URLSearchParams({ present: widget.id }).toString()
-          window.open(url.toString(), `deskmate-present-${widget.id}`, 'popup,width=800,height=600')
-        }}
-      >
-        <Cast size={16} />
-      </button>
-      {editMode && (
-        <>
-          {onSettings != null && (
-            <button
-              type="button"
-              className={styles.settings}
-              title="Settings"
-              aria-label={`Settings for ${widgetName(widget)}`}
-              onClick={() => onSettings(widget)}
-            >
-              <Settings size={16} />
-            </button>
-          )}
+      <div className={styles.toolbar}>
+        {onSettings != null && (
+          <button
+            type="button"
+            className={styles.settings}
+            title="Settings"
+            aria-label={`Settings for ${widgetName(widget)}`}
+            onClick={() => onSettings(widget)}
+          >
+            <Settings size={16} />
+          </button>
+        )}
+        <button
+          type="button"
+          className={styles.present}
+          title="Present on another screen"
+          aria-label={`Present ${widgetName(widget)} on another screen`}
+          onClick={() => {
+            const url = new URL(window.location.href)
+            url.search = new URLSearchParams({ present: widget.id }).toString()
+            window.open(url.toString(), `deskmate-present-${widget.id}`, 'popup,width=800,height=600')
+          }}
+        >
+          <Cast size={16} />
+        </button>
+        {editMode && (
           <button
             type="button"
             className={styles.remove}
@@ -62,8 +62,8 @@ export function WidgetFrame({ widget, theme, editMode, onRemove, onSettings, chi
           >
             <Trash2 size={16} />
           </button>
-        </>
-      )}
+        )}
+      </div>
     </div>
   )
 }

@@ -74,16 +74,14 @@ export function GitHubPulseWidget({ widget }: GitHubPulseWidgetProps) {
         </div>
       )}
       {entries.map(([key, d]) => (d != null ? <RepoRow key={key} data={d} /> : null))}
-      <div className={styles.footer}>
-        {anyData ? (
+      {anyData && (
+        <div className={styles.footer}>
           <span>
             Updated {formatTime(newestUpdate)}
             {anyRateLimited && <span className={styles.warning}> · Rate limited — showing cached data</span>}
           </span>
-        ) : (
-          <span>No data yet</span>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

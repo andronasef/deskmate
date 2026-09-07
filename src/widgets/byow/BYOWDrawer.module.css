@@ -42,7 +42,7 @@
 .save {
   height: 32px;
   padding: 0 var(--space-sm);
-  border-radius: var(--space-sm);
+  border-radius: 0;
   font-size: 14px;
   font-family: inherit;
   cursor: pointer;
@@ -110,7 +110,7 @@
   flex: 1;
   min-height: 160px;
   border: 1px solid var(--border);
-  border-radius: var(--space-sm);
+  border-radius: 0;
   overflow: hidden;
   background: var(--surface-raised);
 }
@@ -118,7 +118,7 @@
 .preview {
   height: 200px;
   border: 1px dashed var(--border);
-  border-radius: var(--space-sm);
+  border-radius: 0;
   overflow: hidden;
   background: var(--surface);
 }

@@ -33,11 +33,13 @@ describe('App shell', () => {
     })
   })
 
-  it('renders the transport toolbar (Export / Import / Edit)', async () => {
+  it('renders an always-visible Edit button and tucks Export/Import behind the settings menu', async () => {
     render(<App />)
-    expect(screen.getByTitle('Export config')).toBeInTheDocument()
-    expect(screen.getByTitle('Import config')).toBeInTheDocument()
     expect(screen.getByText('Edit')).toBeInTheDocument()
+    expect(screen.queryByText('Export')).not.toBeInTheDocument()
+    screen.getByLabelText('Settings menu').click()
+    await waitFor(() => expect(screen.getByText('Export')).toBeInTheDocument())
+    expect(screen.getByText('Import')).toBeInTheDocument()
   })
 
   it('reveals Add Widget and widget chrome only in edit mode', async () => {

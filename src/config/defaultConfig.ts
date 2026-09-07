@@ -1,6 +1,6 @@
 import type { DashboardConfig, LayoutItem, LayoutMap, WidgetInstance } from './types.ts'
 
-export const DEFAULT_THEME_ACCENT = '#22D3EE'
+export const DEFAULT_THEME_ACCENT = '#ff8c1a'
 
 export const GRID_BREAKPOINTS: Record<string, number> = {
   lg: 1200,
@@ -30,7 +30,8 @@ function item(id: string, x: number, y: number, w: number, h: number): LayoutIte
 }
 
 function defaultLayout(): LayoutMap {
-  const [clock, pomodoro, github] = SEEDED_WIDGETS.map((w) => w.id)
+  // Destructure in SEEDED_WIDGETS order — clock, github, pomodoro.
+  const [clock, github, pomodoro] = SEEDED_WIDGETS.map((w) => w.id)
   return {
     // lg (12 cols): clock 4×4, pomodoro 4×2, github 4×4
     lg: [item(clock, 0, 0, 4, 4), item(pomodoro, 4, 0, 4, 2), item(github, 8, 0, 4, 4)],

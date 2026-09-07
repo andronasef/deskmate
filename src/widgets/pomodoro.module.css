@@ -15,11 +15,6 @@
   font-weight: 400;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  color: var(--text-primary);
-  text-shadow: 0 0 2px currentColor, 0 0 10px currentColor, 0 0 20px currentColor;
-}
-
-.countdown[data-running='true'] {
   color: var(--widget-accent, var(--accent));
 }
 
@@ -30,9 +25,8 @@
 
 .doneLabel {
   font-size: 18px;
-  color: var(--widget-accent, var(--accent));
+  color: var(--yellow);
   text-transform: uppercase;
-  text-shadow: 0 0 2px currentColor, 0 0 8px currentColor;
 }
 
 .controls {
@@ -41,23 +35,20 @@
 }
 
 .control {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--border);
+  border: none;
   border-radius: 0;
-  background: var(--surface-raised);
-  color: var(--text-muted);
+  background: transparent;
+  color: var(--cream);
   cursor: pointer;
-  transition: color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
 }
 
 .control:hover {
   color: var(--widget-accent, var(--accent));
-  border-color: var(--widget-accent, var(--accent));
-  box-shadow: 0 0 2px var(--widget-accent, var(--accent)), 0 0 6px var(--widget-accent, var(--accent));
 }
 
 .control:focus-visible {

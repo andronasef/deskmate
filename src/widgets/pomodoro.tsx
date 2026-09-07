@@ -112,7 +112,7 @@ export function PomodoroWidget({ widget }: PomodoroWidgetProps) {
   return (
     <div className={styles.root} data-pomodoro>
       <div
-        className={styles.countdown}
+        className={`glow ${styles.countdown}`}
         data-running={running}
         data-done={done}
         data-testid="pomodoro-countdown"

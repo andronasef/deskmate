@@ -27,6 +27,21 @@ describe('config store grid actions (GRID-01…04)', () => {
     expect(item!.w).toBeGreaterThanOrEqual(1)
   })
 
+  // A breakpoint missing an entry makes RGL fall back to a 1x1 cell at the
+  // origin, so the grid looks broken on every viewport but the one it was added from.
+  it('addWidget places the new item on EVERY breakpoint layout', () => {
+    const id = state().addWidget('clock')
+
+    const breakpoints = Object.keys(state().config.layout)
+    expect(breakpoints.length).toBeGreaterThan(1)
+    for (const bp of breakpoints) {
+      const item = state().config.layout[bp].find((li) => li.i === id)
+      expect(item, `missing layout item on breakpoint "${bp}"`).toBeDefined()
+      expect(item!.w).toBeGreaterThanOrEqual(1)
+      expect(item!.h).toBeGreaterThanOrEqual(1)
+    }
+  })
+
   it('addWidget is blocked at the 50-widget cap', () => {
     const widgets = Array.from({ length: 50 }, (_, i) => ({ id: `w${i}`, type: 'clock', settings: {} }))
     state().importConfig({ ...state().config, widgets })

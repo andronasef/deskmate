@@ -1,11 +1,29 @@
+/* `height: 100%` can't resolve against a flex-sized <main>, so the view
+   collapsed to content height. Stretch into the row instead. */
 .root {
   position: relative;
-  width: 100%;
-  height: 100%;
+  align-self: stretch;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: var(--space-sm);
+  gap: var(--space-sm);
+  box-sizing: border-box;
+}
+
+/* The widget gets the same LED module treatment as a desktop grid cell. */
+.stage {
+  position: relative;
+  flex: 1;
   min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 3px solid #000;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px #141414;
   overflow: hidden;
 }
 
@@ -15,61 +33,151 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+}
+
+.label {
+  text-align: center;
+  font-size: 15px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  min-height: 44px; /* touch target */
+  padding: 0 var(--space-md);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+
+.action:hover,
+.action[data-active='true'] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.action:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Widget-only zoom (portaled to <body>): no header, no dots, no actions —
+   just the widget and a small exit affordance. */
+.zoomOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zoomExit {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.zoomExit:hover,
+.zoomExit:focus-visible {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.zoomExit:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--border);
-  border-radius: var(--space-sm);
-  background: var(--surface-raised);
+  border: none;
+  border-radius: 0;
+  background: transparent;
   color: var(--text-muted);
   cursor: pointer;
   z-index: 5;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .arrow:hover {
   color: var(--accent);
-  border-color: var(--accent);
 }
 
 .arrow:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 1px solid var(--accent);
   outline-offset: 2px;
 }
 
 .dots {
-  position: absolute;
-  bottom: var(--space-md);
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
+  justify-content: center;
   gap: var(--space-sm);
-  z-index: 5;
 }
 
+/* 12px dot inside a 44px touch target. */
 .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+  width: 44px;
+  height: 24px;
   border: none;
-  background: var(--border);
+  background: transparent;
   cursor: pointer;
   padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.dot[data-active='true'] {
+.dot::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #333;
+}
+
+.dot[data-active='true']::before {
   background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
 }
 
 .dot:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 1px solid var(--accent);
   outline-offset: 2px;
 }

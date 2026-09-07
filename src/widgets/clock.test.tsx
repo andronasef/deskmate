@@ -41,9 +41,9 @@ describe('ClockWidget (WID-01)', () => {
     expect(screen.getByTestId('clock-time').textContent).not.toBe(first)
   })
 
-  it('applies the fontSize scale (large → 56px)', () => {
+  it('applies the fontSize scale (large → 60px)', () => {
     renderClock({ fontSize: 'large' })
-    expect(screen.getByTestId('clock-time')).toHaveStyle({ fontSize: '56px' })
+    expect(screen.getByTestId('clock-time')).toHaveStyle({ fontSize: '60px' })
   })
 
   it('cleans up its interval on unmount', () => {
