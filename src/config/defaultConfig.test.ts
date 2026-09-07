@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DEFAULT_THEME_ACCENT, defaultConfig, GRID_COLS, SEEDED_WIDGETS } from './defaultConfig.ts'
+import { DEFAULT_THEME_ACCENT, defaultConfig, GRID_COLS, GRID_ROWS, SEEDED_WIDGETS } from './defaultConfig.ts'
 
 describe('defaultConfig', () => {
   it('returns a fresh object each call with version 1, accent theme, per-breakpoint layout, and 3 seeded widgets', () => {
@@ -24,6 +24,9 @@ describe('defaultConfig', () => {
         // Must fit within the column count, not just be narrower than it —
         // `md` used to seed x=8,w=4 into a 10-col grid and get silently clamped.
         expect(li.x + li.w, `${bp}/${li.i} overflows ${GRID_COLS[bp]} cols`).toBeLessThanOrEqual(GRID_COLS[bp])
+        // The grid is capped at GRID_ROWS (RGL maxRows) so it never scrolls;
+        // a seeded item past that would be silently clamped onto another one.
+        expect(li.y + li.h, `${bp}/${li.i} overflows ${GRID_ROWS} rows`).toBeLessThanOrEqual(GRID_ROWS)
       }
     }
 

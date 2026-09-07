@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useConfigStore } from './store.ts'
 import type { ConfigStore } from './store.ts'
+import { GRID_COLS, GRID_ROWS } from './defaultConfig.ts'
 
 const state = (): ConfigStore => useConfigStore.getState()
 
@@ -39,6 +40,21 @@ describe('config store grid actions (GRID-01…04)', () => {
       expect(item, `missing layout item on breakpoint "${bp}"`).toBeDefined()
       expect(item!.w).toBeGreaterThanOrEqual(1)
       expect(item!.h).toBeGreaterThanOrEqual(1)
+    }
+  })
+
+  it('addWidget keeps new items inside the capped grid (never below the fold)', () => {
+    // The grid is hard-capped to GRID_ROWS so it never scrolls. Placement used to
+    // append below the lowest item, which on a full screen lands out of bounds and
+    // gets clamped on top of an existing widget.
+    for (let n = 0; n < 6; n++) {
+      state().addWidget('clock')
+    }
+    for (const [bp, items] of Object.entries(state().config.layout)) {
+      for (const li of items) {
+        expect(li.y + li.h, `${bp}/${li.i} placed past row ${GRID_ROWS}`).toBeLessThanOrEqual(GRID_ROWS)
+        expect(li.x + li.w, `${bp}/${li.i} placed past col ${GRID_COLS[bp]}`).toBeLessThanOrEqual(GRID_COLS[bp])
+      }
     }
   })
 

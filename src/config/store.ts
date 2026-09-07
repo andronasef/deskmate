@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { StateStorage } from 'zustand/middleware'
 import { createJSONStorage, persist } from 'zustand/middleware'
-import { defaultConfig, GRID_COLS } from './defaultConfig.ts'
+import { defaultConfig, GRID_COLS, GRID_ROWS } from './defaultConfig.ts'
 import { validateConfig } from './schemas.ts'
 import { BACKUP_KEY, STORAGE_KEY, safeGet, safeRemove, safeSet } from './storage.ts'
 import type { WakeLockState } from '../kiosk/wakeLock.ts'
@@ -72,18 +72,38 @@ function backupAndWarn(version: string, reason: string, raw: string): void {
   )
 }
 
-/** First free grid slot on the lg layout: find the lowest y row with a free x position. */
-function firstFreeSlot(layout: LayoutItem[]): { x: number; y: number } {
-  const used = new Set(layout.map((li) => `${li.x},${li.y}`))
-  let y = 0
-  while (true) {
-    for (let x = 0; x < 12; x++) {
-      if (!used.has(`${x},${y}`)) {
+/**
+ * Topmost-leftmost free w×h rectangle within a cols×GRID_ROWS grid, or null when
+ * the screen is full. Placement must stay inside GRID_ROWS: the grid is capped to
+ * one screenful, so appending below the last item would put the widget out of
+ * bounds and RGL would clamp it on top of an existing one.
+ */
+function findFreeRect(items: LayoutItem[], cols: number, w: number, h: number): { x: number; y: number } | null {
+  const taken = Array.from({ length: GRID_ROWS }, () => new Array<boolean>(cols).fill(false))
+  for (const li of items) {
+    for (let y = Math.max(0, li.y); y < Math.min(GRID_ROWS, li.y + li.h); y++) {
+      for (let x = Math.max(0, li.x); x < Math.min(cols, li.x + li.w); x++) {
+        taken[y][x] = true
+      }
+    }
+  }
+  for (let y = 0; y <= GRID_ROWS - h; y++) {
+    for (let x = 0; x <= cols - w; x++) {
+      let fits = true
+      for (let dy = 0; dy < h && fits; dy++) {
+        for (let dx = 0; dx < w; dx++) {
+          if (taken[y + dy][x + dx]) {
+            fits = false
+            break
+          }
+        }
+      }
+      if (fits) {
         return { x, y }
       }
     }
-    y++
   }
+  return null
 }
 
 /**
@@ -98,9 +118,10 @@ function placeOnAllBreakpoints(layout: LayoutMap, id: string): LayoutMap {
     const cols = GRID_COLS[bp]
     // Narrow breakpoints stack full-width; lg/md keep the 4-col card size.
     const w = Math.min(4, cols)
-    const y = items.reduce((max, li) => Math.max(max, li.y + li.h), 0)
-    const x = bp === 'lg' ? firstFreeSlot(items).x : 0
-    next[bp] = [...items, { i: id, x: Math.min(x, cols - w), y, w, h: 2 }]
+    const h = 2
+    // Full screen: drop it on the last row and let RGL's compactor sort it out.
+    const slot = findFreeRect(items, cols, w, h) ?? { x: 0, y: GRID_ROWS - h }
+    next[bp] = [...items, { i: id, x: slot.x, y: slot.y, w, h }]
   }
   // Preserve any breakpoint keys not in GRID_COLS rather than dropping them.
   for (const [bp, items] of Object.entries(layout)) {

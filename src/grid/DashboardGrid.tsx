@@ -1,7 +1,7 @@
 import { Responsive, useContainerWidth, type Layout, type ResponsiveLayouts } from 'react-grid-layout'
-import { forwardRef, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useConfigStore } from '../config/store.ts'
-import { GRID_BREAKPOINTS, GRID_COLS } from '../config/defaultConfig.ts'
+import { GRID_BREAKPOINTS, GRID_COLS, GRID_ROWS } from '../config/defaultConfig.ts'
 import { WidgetFrame } from './WidgetFrame.tsx'
 import { SettingsPopover } from './SettingsPopover.tsx'
 import { renderWidget, WIDGET_REGISTRY } from '../widgets/registry.tsx'
@@ -21,11 +21,24 @@ interface DashboardGridProps {
 
 const GRID_MARGIN = 8
 const MIN_ROW_HEIGHT = 40
-/** One screen = this many rows. Fixed, so `h` maps to a real fraction of the
- *  viewport (h=8 fills it, h=4 is half) and RESIZING ACTUALLY CHANGES HEIGHT.
- *  Deriving rowHeight from the layout's own row count instead would cancel every
- *  resize out — halving `h` would just double rowHeight and look identical. */
-const ROWS_PER_VIEWPORT = 8
+
+/**
+ * `maxRows` caps where an item can be dropped or resized TO, but collision
+ * resolution during a drag (bumping other items out of the way) can still push
+ * one of them past that cap — RGL doesn't re-clamp the whole layout afterward.
+ * An item pushed to y >= GRID_ROWS renders below the container's clipped bottom
+ * edge: invisible, undraggable, effectively lost. Belt-and-suspenders: clamp
+ * every item back inside bounds before it's persisted.
+ */
+export function clampToGrid(items: readonly LayoutItem[], cols: number): LayoutItem[] {
+  return items.map((it) => {
+    const h = Math.min(it.h, GRID_ROWS)
+    const y = Math.min(it.y, GRID_ROWS - h)
+    const w = Math.min(it.w, cols)
+    const x = Math.min(it.x, cols - w)
+    return y === it.y && x === it.x && h === it.h && w === it.w ? it : { ...it, x, y, w, h }
+  })
+}
 
 /**
  * Tracks the available content height for the grid (excluding the container's own
@@ -92,9 +105,16 @@ export function DashboardGrid({ editMode, configOverride, onEditCustom }: Dashbo
     containerHeight > 0
       ? Math.max(
           MIN_ROW_HEIGHT,
-          Math.floor((containerHeight - GRID_MARGIN * (ROWS_PER_VIEWPORT - 1)) / ROWS_PER_VIEWPORT),
+          Math.floor((containerHeight - GRID_MARGIN * (GRID_ROWS - 1)) / GRID_ROWS),
         )
       : MIN_ROW_HEIGHT
+
+  // A fresh object literal every render (`{ enabled: interactive }`) gives RGL's
+  // internal drag hook a new prop identity on every re-render — including ones
+  // that happen mid-drag (widgets tick, store subscriptions fire). Memoized so a
+  // drag in progress isn't looking at config that changed out from under it.
+  const dragConfig = useMemo(() => ({ enabled: interactive }), [interactive])
+  const resizeConfig = useMemo(() => ({ enabled: interactive, handles: ['se'] as const }), [interactive])
 
   const handleLayoutChange = (_layout: Layout, newLayouts: ResponsiveLayouts) => {
     const serialized = JSON.stringify(newLayouts)
@@ -105,7 +125,7 @@ export function DashboardGrid({ editMode, configOverride, onEditCustom }: Dashbo
     const mutable: LayoutMap = {}
     for (const [bp, items] of Object.entries(newLayouts)) {
       if (items != null) {
-        mutable[bp] = [...items]
+        mutable[bp] = clampToGrid(items, GRID_COLS[bp] ?? Math.max(...items.map((it) => it.x + it.w)))
       }
     }
     setLayout(mutable)
@@ -134,10 +154,13 @@ export function DashboardGrid({ editMode, configOverride, onEditCustom }: Dashbo
           breakpoints={GRID_BREAKPOINTS}
           cols={GRID_COLS}
           rowHeight={rowHeight}
+          // One screen of rows, hard-capped: a widget can't be resized or dragged
+          // past the bottom of the viewport, so the grid never grows a scrollbar.
+          maxRows={GRID_ROWS}
           margin={[GRID_MARGIN, GRID_MARGIN]}
           containerPadding={[0, 0]}
-          dragConfig={{ enabled: interactive }}
-          resizeConfig={{ enabled: interactive, handles: ['se'] }}
+          dragConfig={dragConfig}
+          resizeConfig={resizeConfig}
           onLayoutChange={handleLayoutChange}
           className={styles.grid}
         >

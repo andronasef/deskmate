@@ -10,6 +10,14 @@ export const GRID_BREAKPOINTS: Record<string, number> = {
   xxs: 0,
 }
 
+/**
+ * Rows in one screenful. The grid is hard-capped to this many rows (RGL `maxRows`)
+ * and rowHeight is derived from it, so a widget's `h` is a fraction of the viewport
+ * and nothing can be resized or dragged past the bottom edge — the dashboard never
+ * grows a scrollbar. Every seeded layout below fits within it.
+ */
+export const GRID_ROWS = 8
+
 export const GRID_COLS: Record<string, number> = {
   lg: 12,
   md: 10,
@@ -32,20 +40,19 @@ function item(id: string, x: number, y: number, w: number, h: number): LayoutIte
 function defaultLayout(): LayoutMap {
   // Destructure in SEEDED_WIDGETS order — clock, github, pomodoro.
   const [clock, github, pomodoro] = SEEDED_WIDGETS.map((w) => w.id)
-  // Heights are in viewport rows (ROWS_PER_VIEWPORT = 8 in DashboardGrid), so the
-  // wide breakpoints seed a dashboard that fills the screen instead of leaving
-  // half of it black. Narrow breakpoints stack at half-height each and scroll.
+  // Heights are in viewport rows (GRID_ROWS = 8). Widgets fill only the top half
+  // by default — the bottom half is left genuinely empty, not just visually spare,
+  // so there's room to drag/resize into. A grid seeded to 100% capacity has nowhere
+  // for a collision to resolve to and every drag snaps right back where it started.
   return {
-    // lg (12 cols): clock 4×8, pomodoro 4×4, github 4×8 — spans all 12 cols, fills 8 rows
-    lg: [item(clock, 0, 0, 4, 8), item(pomodoro, 4, 0, 4, 4), item(github, 8, 0, 4, 8)],
+    // lg (12 cols): three widgets side by side, all half-height.
+    lg: [item(clock, 0, 0, 4, 4), item(pomodoro, 4, 0, 4, 4), item(github, 8, 0, 4, 4)],
     // md (10 cols): narrower so x+w stays within 10 (was x=8,w=4 → overflowed to 12)
-    md: [item(clock, 0, 0, 4, 8), item(pomodoro, 4, 0, 3, 4), item(github, 7, 0, 3, 8)],
-    // sm (6 cols): full-width stacked
-    sm: [item(clock, 0, 0, 6, 4), item(pomodoro, 0, 4, 6, 2), item(github, 0, 6, 6, 4)],
-    // xs (4 cols): full-width stacked
-    xs: [item(clock, 0, 0, 4, 4), item(pomodoro, 0, 4, 4, 2), item(github, 0, 6, 4, 4)],
-    // xxs (2 cols): full-width stacked
-    xxs: [item(clock, 0, 0, 2, 4), item(pomodoro, 0, 4, 2, 2), item(github, 0, 6, 2, 4)],
+    md: [item(clock, 0, 0, 4, 4), item(pomodoro, 4, 0, 3, 4), item(github, 7, 0, 3, 4)],
+    // Narrow breakpoints stack full-width, 3+2+3 rows so the stack still fits one screen.
+    sm: [item(clock, 0, 0, 6, 3), item(pomodoro, 0, 3, 6, 2), item(github, 0, 5, 6, 3)],
+    xs: [item(clock, 0, 0, 4, 3), item(pomodoro, 0, 3, 4, 2), item(github, 0, 5, 4, 3)],
+    xxs: [item(clock, 0, 0, 2, 3), item(pomodoro, 0, 3, 2, 2), item(github, 0, 5, 2, 3)],
   }
 }
 
