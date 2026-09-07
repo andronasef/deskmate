@@ -1,7 +1,7 @@
 .container {
   width: 100%;
   min-height: 200px;
-  padding: var(--space-lg);
+  padding: var(--space-sm);
   box-sizing: border-box;
   /* rowHeight is computed to fit exactly (DashboardGrid.tsx); this is only a
      safety net for the rare layout the MIN_ROW_HEIGHT floor can't shrink to fit. */

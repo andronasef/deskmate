@@ -21,6 +21,9 @@ describe('defaultConfig', () => {
         expect(li.w).toBeGreaterThanOrEqual(1)
         expect(li.w).toBeLessThanOrEqual(GRID_COLS[bp])
         expect(li.h).toBeGreaterThanOrEqual(1)
+        // Must fit within the column count, not just be narrower than it —
+        // `md` used to seed x=8,w=4 into a 10-col grid and get silently clamped.
+        expect(li.x + li.w, `${bp}/${li.i} overflows ${GRID_COLS[bp]} cols`).toBeLessThanOrEqual(GRID_COLS[bp])
       }
     }
 

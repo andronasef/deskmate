@@ -19,14 +19,13 @@ interface DashboardGridProps {
   onEditCustom?: (id: string) => void
 }
 
-const GRID_MARGIN_Y = 16
-const MIN_ROW_HEIGHT = 60
-
-/** Largest breakpoint whose min-width the container satisfies — mirrors RGL's own resolution. */
-function resolveBreakpoint(width: number, breakpoints: Record<string, number>): string {
-  const sorted = Object.entries(breakpoints).sort((a, b) => b[1] - a[1])
-  return sorted.find(([, minWidth]) => width >= minWidth)?.[0] ?? sorted[sorted.length - 1][0]
-}
+const GRID_MARGIN = 8
+const MIN_ROW_HEIGHT = 40
+/** One screen = this many rows. Fixed, so `h` maps to a real fraction of the
+ *  viewport (h=8 fills it, h=4 is half) and RESIZING ACTUALLY CHANGES HEIGHT.
+ *  Deriving rowHeight from the layout's own row count instead would cancel every
+ *  resize out — halving `h` would just double rowHeight and look identical. */
+const ROWS_PER_VIEWPORT = 8
 
 /**
  * Tracks the available content height for the grid (excluding the container's own
@@ -87,14 +86,14 @@ export function DashboardGrid({ editMode, configOverride, onEditCustom }: Dashbo
   const layouts = config.layout
   const theme = { accent: config.theme.accent }
 
-  // Fill (or shrink to fit) the available container height instead of a fixed
-  // rowHeight — otherwise short layouts leave a dead black gap below the grid,
-  // and tall ones overflow past the window and force a page scrollbar.
-  const breakpoint = resolveBreakpoint(width, GRID_BREAKPOINTS)
-  const rowsUsed = Math.max(1, ...(layouts[breakpoint] ?? []).map((it) => it.y + it.h))
+  // Scale rows to the viewport (not to the layout) so a widget's `h` is a stable
+  // fraction of the screen at any window size, and resizing still visibly changes it.
   const rowHeight =
     containerHeight > 0
-      ? Math.max(MIN_ROW_HEIGHT, Math.floor((containerHeight - GRID_MARGIN_Y * (rowsUsed - 1)) / rowsUsed))
+      ? Math.max(
+          MIN_ROW_HEIGHT,
+          Math.floor((containerHeight - GRID_MARGIN * (ROWS_PER_VIEWPORT - 1)) / ROWS_PER_VIEWPORT),
+        )
       : MIN_ROW_HEIGHT
 
   const handleLayoutChange = (_layout: Layout, newLayouts: ResponsiveLayouts) => {
@@ -135,7 +134,8 @@ export function DashboardGrid({ editMode, configOverride, onEditCustom }: Dashbo
           breakpoints={GRID_BREAKPOINTS}
           cols={GRID_COLS}
           rowHeight={rowHeight}
-          margin={[16, GRID_MARGIN_Y]}
+          margin={[GRID_MARGIN, GRID_MARGIN]}
+          containerPadding={[0, 0]}
           dragConfig={{ enabled: interactive }}
           resizeConfig={{ enabled: interactive, handles: ['se'] }}
           onLayoutChange={handleLayoutChange}

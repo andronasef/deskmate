@@ -32,11 +32,14 @@ function item(id: string, x: number, y: number, w: number, h: number): LayoutIte
 function defaultLayout(): LayoutMap {
   // Destructure in SEEDED_WIDGETS order — clock, github, pomodoro.
   const [clock, github, pomodoro] = SEEDED_WIDGETS.map((w) => w.id)
+  // Heights are in viewport rows (ROWS_PER_VIEWPORT = 8 in DashboardGrid), so the
+  // wide breakpoints seed a dashboard that fills the screen instead of leaving
+  // half of it black. Narrow breakpoints stack at half-height each and scroll.
   return {
-    // lg (12 cols): clock 4×4, pomodoro 4×2, github 4×4
-    lg: [item(clock, 0, 0, 4, 4), item(pomodoro, 4, 0, 4, 2), item(github, 8, 0, 4, 4)],
-    // md (10 cols): same sizes
-    md: [item(clock, 0, 0, 4, 4), item(pomodoro, 4, 0, 4, 2), item(github, 8, 0, 4, 4)],
+    // lg (12 cols): clock 4×8, pomodoro 4×4, github 4×8 — spans all 12 cols, fills 8 rows
+    lg: [item(clock, 0, 0, 4, 8), item(pomodoro, 4, 0, 4, 4), item(github, 8, 0, 4, 8)],
+    // md (10 cols): narrower so x+w stays within 10 (was x=8,w=4 → overflowed to 12)
+    md: [item(clock, 0, 0, 4, 8), item(pomodoro, 4, 0, 3, 4), item(github, 7, 0, 3, 8)],
     // sm (6 cols): full-width stacked
     sm: [item(clock, 0, 0, 6, 4), item(pomodoro, 0, 4, 6, 2), item(github, 0, 6, 6, 4)],
     // xs (4 cols): full-width stacked
