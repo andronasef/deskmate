@@ -1,4 +1,11 @@
-import { Responsive, useContainerWidth, type Layout, type ResponsiveLayouts } from 'react-grid-layout'
+import {
+  noCompactor,
+  Responsive,
+  useContainerWidth,
+  type Compactor,
+  type Layout,
+  type ResponsiveLayouts,
+} from 'react-grid-layout'
 import { forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useConfigStore } from '../config/store.ts'
 import { GRID_BREAKPOINTS, GRID_COLS, GRID_ROWS } from '../config/defaultConfig.ts'
@@ -21,6 +28,19 @@ interface DashboardGridProps {
 
 const GRID_MARGIN = 8
 const MIN_ROW_HEIGHT = 40
+
+/**
+ * Free placement: a dropped widget stays exactly where it was dropped.
+ *
+ * RGL compacts vertically by default, which floats every widget to the top —
+ * drop one in the middle of the screen and it springs straight back to row 0.
+ * `noCompactor` alone isn't enough though: with nothing to compact and nothing
+ * blocking a collision, dropping a widget onto an occupied cell leaves the two
+ * stacked at identical coordinates and the lower one is completely hidden.
+ * `preventCollision` makes such a drop snap back instead, so any landing spot
+ * is allowed as long as it's actually free.
+ */
+const FREE_PLACEMENT: Compactor = { ...noCompactor, preventCollision: true }
 
 /**
  * `maxRows` caps where an item can be dropped or resized TO, but collision
@@ -157,6 +177,11 @@ export function DashboardGrid({ editMode, configOverride, onEditCustom }: Dashbo
           // One screen of rows, hard-capped: a widget can't be resized or dragged
           // past the bottom of the viewport, so the grid never grows a scrollbar.
           maxRows={GRID_ROWS}
+          // Free placement. RGL compacts vertically by default, which floats every
+          // widget to the top: drop one in the middle of the screen and it springs
+          // straight back to row 0. This is a dashboard the user arranges by hand,
+          // so a dropped widget stays exactly where it was dropped.
+          compactor={FREE_PLACEMENT}
           margin={[GRID_MARGIN, GRID_MARGIN]}
           containerPadding={[0, 0]}
           dragConfig={dragConfig}
