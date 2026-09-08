@@ -1,0 +1,99 @@
+/* The 1600x900 browser-start-page pass. Tokens and .panel come from
+   screen.css -> ../../src/index.css; only the window chrome is new here. */
+
+.browser {
+  background: #000;
+  display: flex;
+  flex-direction: column;
+}
+
+.chrome {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 74px;
+  padding: 0 22px;
+  background: #101012;
+  border-bottom: 1px solid #262626;
+  font-family: 'VT323', 'Courier New', monospace;
+  flex: 0 0 auto;
+}
+
+.lights {
+  display: flex;
+  gap: 9px;
+}
+
+.lights span {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #2f2f33;
+}
+
+.tab {
+  padding: 8px 26px;
+  border-radius: 8px 8px 0 0;
+  background: #1b1b1f;
+  color: var(--text-primary);
+  font-size: 26px;
+  letter-spacing: 1px;
+}
+
+.omnibox {
+  flex: 1;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  border-radius: 21px;
+  background: #1b1b1f;
+  color: #6b6b70;
+  font-size: 24px;
+  letter-spacing: 1px;
+}
+
+.desk {
+  --led: 10px;
+  flex: 1;
+  padding: 26px;
+  min-height: 0;
+}
+
+/* The desktop layout: three widgets across, as GRID_COLS/SEEDED_WIDGETS lay
+   them out on a wide screen. */
+.deskGrid {
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.deskCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  overflow: hidden;
+  border: 3px solid #000;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px #141414, 0 1px 0 #000;
+}
+
+/* The widgets were sized for a 540px-wide phone screen; a third of 1600px is
+   about the same, but the clock and timer need reining in. */
+.deskCell .clockTime {
+  font-size: 104px;
+}
+
+.deskCell .pomodoroTime {
+  font-size: 108px;
+}
+
+.deskCell .pulseStats {
+  font-size: 38px;
+}
+
+.deskCell .pulseRepo {
+  font-size: 28px;
+}

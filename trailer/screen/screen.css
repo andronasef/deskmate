@@ -1,0 +1,199 @@
+/* The app's real design tokens, .panel/.matrix/.glow and per-type tints. */
+@import url('../../src/index.css');
+
+/* Remotion owns the frame size; the app's 100svh rules must not fight it.
+   And .blink is a CSS animation — non-deterministic under Remotion, so kill
+   it. Every blink in the trailer is driven from useCurrentFrame() instead. */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.blink {
+  animation: none;
+}
+
+.screenRoot {
+  --led: 12px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+}
+
+/* Full-bleed widget stage, mirroring the app's mobile SingleWidgetView. */
+.stage {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* the bezel from src/grid/WidgetFrame.module.css */
+  border: 3px solid #000;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px #141414, 0 1px 0 #000;
+  overflow: hidden;
+}
+
+.body {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* Dot indicator row — from src/kiosk/SingleWidgetView.module.css */
+.dots {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  padding: 22px 0 30px;
+  background: #000;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--off-dot);
+}
+
+.dot[data-active='true'] {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+}
+
+/* ── Clock ───────────────────────────────────────────────────────── */
+.clock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  color: var(--cream);
+}
+
+.clockTime {
+  font-size: 132px;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+
+.clockMeta {
+  font-size: 34px;
+  color: var(--text-muted);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+/* ── Pomodoro ────────────────────────────────────────────────────── */
+.pomodoro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  color: var(--widget-accent, var(--accent));
+}
+
+.pomodoroLabel {
+  font-size: 32px;
+  letter-spacing: 8px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.pomodoroTime {
+  font-size: 148px;
+  line-height: 1;
+}
+
+.pomodoroDone {
+  font-size: 44px;
+  color: var(--destructive);
+  letter-spacing: 3px;
+}
+
+.pomodoroBar {
+  width: 320px;
+  height: 10px;
+  background: var(--off-dot);
+}
+
+.pomodoroBarFill {
+  height: 100%;
+  background: var(--widget-accent, var(--accent));
+}
+
+/* ── GitHub Pulse ────────────────────────────────────────────────── */
+.pulse {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.pulseRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pulseRepo {
+  font-size: 34px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+.pulseStats {
+  display: flex;
+  gap: 28px;
+  font-size: 46px;
+  color: var(--widget-accent, var(--accent));
+}
+
+.pulseStat {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.pulseStatLabel {
+  font-size: 26px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+}
+
+/* ── Wordmark ────────────────────────────────────────────────────── */
+.wordmark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  text-align: center;
+}
+
+.wordmarkName {
+  font-family: 'Press Start 2P', 'VT323', monospace;
+  font-size: 46px;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+.wordmarkTag {
+  font-size: 38px;
+  color: var(--text-muted);
+  letter-spacing: 6px;
+}
+
+/* ── LED ignition ────────────────────────────────────────────────── */
+.ignition {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, var(--accent) var(--dot-r), transparent var(--dot-gap));
+  background-size: var(--led) var(--led);
+  pointer-events: none;
+}

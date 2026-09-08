@@ -1,0 +1,61 @@
+/* Overlay titles for the 1080x1920 trailer. Deliberately independent of the
+   app stylesheet — this is trailer chrome, not DeskMate UI. */
+.captionRoot {
+  pointer-events: none;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* A soft scrim so copy stays legible when the camera pushes in and the phone
+   fills the frame behind it. */
+.captionBar {
+  width: 100%;
+  padding: 320px 80px 180px;
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.96) 52%, transparent 100%);
+}
+
+.captionText {
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: 72px;
+  line-height: 1.1;
+  letter-spacing: 1px;
+  text-align: center;
+  color: #fff8e7;
+  text-shadow: 0 0 2px currentColor, 0 0 18px rgba(255, 140, 26, 0.45);
+}
+
+.endCard {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 30px;
+  padding-bottom: 250px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 40%, transparent 100%);
+}
+
+.endCardLogo {
+  width: 158px;
+  height: 158px;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 0 26px rgba(255, 140, 26, 0.55));
+}
+
+.endCardName {
+  font-family: 'Press Start 2P', 'VT323', monospace;
+  font-size: 68px;
+  letter-spacing: 2px;
+  color: #ff8c1a;
+  text-shadow: 0 0 2px currentColor, 0 0 22px currentColor;
+}
+
+.endCardTag {
+  font-family: 'VT323', 'Courier New', monospace;
+  font-size: 54px;
+  letter-spacing: 10px;
+  color: #b3a382;
+}
