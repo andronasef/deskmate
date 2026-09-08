@@ -43,8 +43,10 @@
 }
 
 .ogTag {
-  font-size: 42px;
-  letter-spacing: 12px;
+  font-size: 38px;
+  line-height: 1.5;
+  letter-spacing: 5px;
+  text-align: center;
   text-transform: uppercase;
   color: var(--text-muted);
 }

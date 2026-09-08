@@ -9,7 +9,11 @@ export const Og: React.FC = () => (
     <div className="ogGrid" />
     <div className="ogPanel">
       <div className="ogName glow">DeskMate</div>
-      <div className="ogTag">Time. Focus. Pulse.</div>
+      <div className="ogTag">
+        Turn any idle screen into a
+        <br />
+        customizable smart dashboard
+      </div>
       <div className="ogDots">
         <span className="ogDot" />
         <span className="ogDot" data-active="true" />
