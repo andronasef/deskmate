@@ -1,6 +1,7 @@
 import { Composition, staticFile } from 'remotion'
 import { z } from 'zod'
 
+import { Og } from './Og'
 import { trackSchema } from './music'
 import { DesktopContent } from './screen/DesktopContent'
 import { ScreenContent } from './screen/ScreenContent'
@@ -27,6 +28,9 @@ async function loadSource(name: string) {
 
 export const RemotionRoot: React.FC = () => (
   <>
+    {/* Social preview card: bun run og -> public/og.png */}
+    <Composition id="Og" component={Og} durationInFrames={1} fps={1} width={1200} height={630} />
+
     {/* PASS 1a — the phone screen:  bun run trailer:screen  -> public/screen.mp4 */}
     <Composition
       id="ScreenContent"

@@ -11,6 +11,7 @@
     "typecheck": "tsc -b --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "og": "remotion still trailer/index.ts Og public/og.png",
     "trailer:studio": "remotion studio trailer/index.ts",
     "trailer:screen": "remotion render trailer/index.ts ScreenContent public/screen.mp4 --codec=h264 --jpeg-quality=95 --scale=2",
     "trailer:desktop": "remotion render trailer/index.ts DesktopContent public/desktop.mp4 --codec=h264 --jpeg-quality=95",
